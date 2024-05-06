@@ -1,5 +1,15 @@
 import bookmark from "../assets/icons/bookmark.png";
 import home from "../assets/icons/home.png";
+import homeOutline from "../assets/icons/home-outline.png";
+import homeSolid from "../assets/icons/home-solid.png";
+import cartOutline from "../assets/icons/cart-outline.png";
+import cartSolid from "../assets/icons/cart-solid.png";
+import orderOutline from "../assets/icons/shopping-bag-outline.png";
+import orderSolid from "../assets/icons/shopping-bag-solid.png";
+import userOutline from "../assets/icons/user-outline.png";
+import userSolid from "../assets/icons/user-solid.png";
+import heartOutline from "../assets/icons/heart-outline.png";
+import heartSolid from "../assets/icons/heart-solid.png";
 import plus from "../assets/icons/plus.png";
 import profile from "../assets/icons/profile.png";
 import leftArrow from "../assets/icons/left-arrow.png";
@@ -16,6 +26,16 @@ export default {
   play,
   bookmark,
   home,
+  homeOutline,
+  homeSolid,
+  cartOutline,
+  cartSolid,
+  orderOutline,
+  orderSolid,
+  userOutline,
+  userSolid,
+  heartOutline,
+  heartSolid,
   plus,
   profile,
   leftArrow,

@@ -7,7 +7,7 @@ export default function App() {
         <View className="flex-1 items-center justify-center bg-white" >
             <Text className="text-3xl font-psemibold " >Open up App.js to start working on your app!</Text>
             <StatusBar style="auto" />
-            <Link href="/profile" >Go to Profile</Link>
+            <Link href="/home" >Go to Home</Link>
         </View>
     );
 } 
