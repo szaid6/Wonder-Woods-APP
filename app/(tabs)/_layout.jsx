@@ -27,13 +27,14 @@ const TabsLayout = () => {
           tabBarShowLabel: false,
           tabBarActiveTintColor: '#f37121',
           tabBarInactiveTintColor: '#F37121',
-          headerTransparent: true,
           tabBarStyle: {
             backgroundColor: '#feecd6',
+            position: 'absolute',
+            bottom: 20,
+            left: 30,
+            right: 30,
             borderTopWidth: 0,
             elevation: 0,
-            marginBottom: 20,
-            marginHorizontal: 30,
             borderRadius: 10,
           },
         }}
