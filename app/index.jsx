@@ -31,8 +31,8 @@ export default function App() {
                     {/* Continue to app btn */}
                     <CustomButton
                         title="Continue to app"
-                        containerStyles="w-full"
-                        textStyles="text-lg"
+                        containerStyles="w-full bg-primary"
+                        textStyles="text-lg text-white"
                         handlePress={() => { router.push('/sign-in') }}
                     >
                     </CustomButton>

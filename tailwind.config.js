@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        /* Define primary color */
+        /* Define primary color */ 
         primary: {
           DEFAULT: '#f37121', // 500
           light: '#f68e41',   // 400 You can choose a lighter shade for hover/focus effects

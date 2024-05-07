@@ -21,6 +21,8 @@ import logout from "../assets/icons/logout.png";
 import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
+import lock from "../assets/icons/lock.png";
+import mail from "../assets/icons/mail.png";
 
 export default {
   play,
@@ -46,4 +48,6 @@ export default {
   logout,
   eyeHide,
   eye,
+  lock,
+  mail,
 };
