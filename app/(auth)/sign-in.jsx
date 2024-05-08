@@ -34,7 +34,7 @@ const SignIn = () => {
                 otherStyles="mb-5"
                 keyboardType="email-address"
                 externalIcon="mail"
-              />
+              /> 
 
               <FormField
                 label=""
