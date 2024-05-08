@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import images from '../../constants/images'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton';
+import { Link } from 'expo-router'
 
 const SignIn = () => {
 
@@ -12,29 +13,30 @@ const SignIn = () => {
     password: ''
   })
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   return (
     <SafeAreaView className="h-full">
-      <ScrollView>
-        <View className="flex items-center  w-full min-h-[85vh]">
+      <ScrollView contentContainerStyle={{ height: '100%' }}>
+        <View className="flex items-center px-5 justify-center w-full min-h-[100vh]">
           <Image
             source={images.logo}
-            className="w-36 h-36 m-[100px]"
+            className="w-36 h-36  mb-[80px]"
             resizeMode='contain'
           />
-
-          <View className="w-full px-5">
+          <View className="w-full">
             <View className="flex items-center w-full py-4 bg-secondary-lighter">
-              <Text className="text-2xl mb-10 text-tertiary-Default font-psemibold">Login</Text>
+              <Text className="text-3xl mb-10 text-tertiary-Default font-psemibold">Login</Text>
               <FormField
                 label=""
-                placeholder="Enter your email"
+                placeholder="Enter your phone number"
                 type="email"
                 value={form.email}
                 handleChangeText={(value) => setForm({ ...form, email: value })}
                 otherStyles="mb-5"
-                keyboardType="email-address"
-                externalIcon="mail"
-              /> 
+                keyboardType="phone-pad"
+                externalIcon="phone"
+              />
 
               <FormField
                 label=""
@@ -46,29 +48,25 @@ const SignIn = () => {
                 secureTextEntry={true}
                 externalIcon="lock"
               />
-              <View className="w-3/4 mb-3 mt-1 border border-tertiary-light"></View>
+              <View className="w-3/4 mb-4 mt-2 border border-tertiary-light"></View>
 
               {/* 2 links of create account and forget password */}
               <View className="flex flex-row justify-between w-full px-3">
-                <Text className="text-primary font-pmedium">Create an account</Text>
-                <Text className="text-primary font-pmedium">Forget Password</Text>
+                <Link href="/sign-up" className="text-primary font-pmedium">Create Account</Link>
+                <Link href="/forget-password" className="text-primary font-pmedium">Forgot Password?</Link>
               </View>
 
               {/* Login Button */}
               <CustomButton
                 title="LOGIN"
-                containerStyles="w-3/4 my-5"
-                textStyles="text-lg text-tertiary-darker"
+                containerStyles="w-3/4 mt-8 mb-5"
+                textStyles="text-lg text-tertiary-light"
                 handlePress={() => { router.push('/sign-in') }}
+                isLoading={isSubmitting}
               >
               </CustomButton>
             </View>
-
-
           </View>
-
-
-
         </View>
       </ScrollView>
     </SafeAreaView>

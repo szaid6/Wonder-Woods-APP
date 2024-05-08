@@ -23,6 +23,7 @@ import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 import lock from "../assets/icons/lock.png";
 import mail from "../assets/icons/mail.png";
+import phone from "../assets/icons/phone.png";
 
 export default {
   play,
@@ -50,4 +51,5 @@ export default {
   eye,
   lock,
   mail,
+  phone,
 };
