@@ -21,7 +21,7 @@ module.exports = {
 
         // Define tertiary color
         tertiary: {
-          Default: '#963216',
+          DEFAULT: '#963216',
           light: '#bd3e11',
           dark: '#792b15',
           darker: '#411309'

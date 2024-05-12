@@ -2,6 +2,7 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { Tabs, Redirect } from 'expo-router'
 import { icons } from '../../constants';
+import Header from '../../components/Header';
 
 const TabIcon = ({ icon, focusedIcon, color, name, focused }) => {
   return (
@@ -22,6 +23,19 @@ const TabIcon = ({ icon, focusedIcon, color, name, focused }) => {
 const TabsLayout = () => {
   return (
     <>
+      {/* Search Bar and Notification Icon */}
+      <View className="w-full pt-11 pb-3 px-4 flex flex-row justify-between bg-secondary-light">
+        <Header
+          showTitle={false}
+          title="Home"
+          showBackButton={false}
+          showNotificationIcon={true}
+          showSearchBar={true}
+          searchBarEditable={false}
+        />
+      </View>
+
+
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,

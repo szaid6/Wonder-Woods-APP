@@ -24,6 +24,8 @@ import play from "../assets/icons/play.png";
 import lock from "../assets/icons/lock.png";
 import mail from "../assets/icons/mail.png";
 import phone from "../assets/icons/phone.png";
+import bell from "../assets/icons/bell.png";
+import location from "../assets/icons/location.png";
 
 export default {
   play,
@@ -52,4 +54,6 @@ export default {
   lock,
   mail,
   phone,
+  bell,
+  location,
 };
