@@ -35,7 +35,6 @@ const TabsLayout = () => {
         />
       </View>
 
-
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,

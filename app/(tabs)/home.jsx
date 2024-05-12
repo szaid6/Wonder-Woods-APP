@@ -138,7 +138,7 @@ const Home = () => {
       <ScrollView>
         {/* Address Bar */}
         <TouchableWithoutFeedback
-          onPress={() => router.push('address')}
+          onPress={() => router.push('/address')}
         >
           <View className="w-full h-12 px-4 flex flex-row items-center bg-secondary-lighter">
             {/* location icon */}
