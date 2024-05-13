@@ -18,6 +18,11 @@ const PageLayout = () => {
                         headerShown: false
                     }}
                 />
+                <Stack.Screen name="address-update"
+                    options={{
+                        headerShown: false
+                    }}
+                />
             </Stack>
             <StatusBar style="auto" />
         </>

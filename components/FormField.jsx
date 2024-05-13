@@ -35,6 +35,8 @@ const FormField = ({ label, placeholder, type, value, handleChangeText, otherSty
                     onChangeText={handleChangeText}
                     keyboardType={keyboardType}
                     secureTextEntry={secureTextEntry && !showPassword}
+                    // color of the text entered
+                    style={{ color: '#f37121' }}
                 />
 
                 {
