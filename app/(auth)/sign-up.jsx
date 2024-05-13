@@ -38,7 +38,7 @@ const SignUp = () => {
                   type="text"
                   value={form.name}
                   handleChangeText={(value) => setForm({ ...form, name: value })}
-                  otherStyles="mb-5"
+                  otherStyles="mb-5 w-80"
                   externalIcon="userOutline"
                 />
 
@@ -49,7 +49,7 @@ const SignUp = () => {
                   type="tel"
                   value={form.email}
                   handleChangeText={(value) => setForm({ ...form, email: value })}
-                  otherStyles="mb-5"
+                  otherStyles="mb-5 w-80"
                   keyboardType="phone-pad"
                   externalIcon="phone"
                 />
@@ -61,7 +61,7 @@ const SignUp = () => {
                   type="email"
                   value={form.email}
                   handleChangeText={(value) => setForm({ ...form, email: value })}
-                  otherStyles="mb-5"
+                  otherStyles="mb-5 w-80"
                   externalIcon="mail"
                 />
 
@@ -71,7 +71,7 @@ const SignUp = () => {
                   type="password"
                   value={form.password}
                   handleChangeText={(value) => setForm({ ...form, password: value })}
-                  otherStyles="mb-5"
+                  otherStyles="mb-5 w-80"
                   secureTextEntry={true}
                   externalIcon="lock"
                 />
@@ -82,7 +82,7 @@ const SignUp = () => {
                   type="password"
                   value={form.confirmPassword}
                   handleChangeText={(value) => setForm({ ...form, confirmPassword: value })}
-                  otherStyles="mb-5"
+                  otherStyles="mb-5 w-80"
                   secureTextEntry={true}
                   externalIcon="lock"
                 />

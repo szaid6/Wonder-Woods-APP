@@ -9,20 +9,24 @@ const FormField = ({ label, placeholder, type, value, handleChangeText, otherSty
     const [showPassword, setShowPassword] = useState(false)
 
     return (
-        <View className={`px-10 space-y-2 ${otherStyles}`}>
+        <View className={`${otherStyles}`}>
             {
                 label &&
-                <Text className="text-base font-pmedium">{label}</Text>
+                <Text className="text-base font-pmedium text-tertiary">{label}</Text>
             }
 
-            <View className="flex flex-row gap-2 w-100 bg-tertiary-lighter rounded-lg justify-center items-center">
+            <View className="flex flex-row gap-2 w-full bg-tertiary-lighter rounded-lg justify-center items-center">
                 {/* add icon with custom color*/}
-                <Image
-                    source={icons[externalIcon]}
-                    resizeMode='contain'
-                    className="w-6 h-6"
-                    style={{ tintColor: '#E45412' }}
-                />
+
+                {
+                    externalIcon &&
+                    <Image
+                        source={icons[externalIcon]}
+                        resizeMode='contain'
+                        className="w-6 h-6"
+                        style={{ tintColor: '#E45412' }}
+                    />
+                }
                 <TextInput
                     className="w-full pl-3 pb-2 pt-3 text-base text-tertiary-darker relative font-pmedium border-2 rounded-lg border-primary"
                     placeholder={placeholder}
@@ -37,7 +41,7 @@ const FormField = ({ label, placeholder, type, value, handleChangeText, otherSty
                     type === 'password' &&
                     <TouchableOpacity
                         onPress={() => setShowPassword(!showPassword)}
-                        className="absolute right-0 top-3"
+                        className="absolute -right-2 top-[15]"
                     >
                         <Image
                             source={!showPassword ? icons.eye : icons.eyeHide}

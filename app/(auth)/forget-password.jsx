@@ -36,7 +36,7 @@ const ForgetPassword = () => {
                                     type="email"
                                     value={form.email}
                                     handleChangeText={(value) => setForm({ ...form, email: value })}
-                                    otherStyles="mb-5"
+                                    otherStyles="mb-5 w-80"
                                     externalIcon="mail"
                                 />
 
@@ -46,7 +46,7 @@ const ForgetPassword = () => {
                                     type="password"
                                     value={form.password}
                                     handleChangeText={(value) => setForm({ ...form, password: value })}
-                                    otherStyles="mb-5"
+                                    otherStyles="mb-5 w-80"
                                     secureTextEntry={true}
                                     externalIcon="lock"
                                 />
@@ -57,7 +57,7 @@ const ForgetPassword = () => {
                                     type="password"
                                     value={form.confirmPassword}
                                     handleChangeText={(value) => setForm({ ...form, confirmPassword: value })}
-                                    otherStyles="mb-5"
+                                    otherStyles="mb-5 w-80"
                                     secureTextEntry={true}
                                     externalIcon="lock"
                                 />

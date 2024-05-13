@@ -3,10 +3,10 @@ import React from 'react'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 
+
 const PageLayout = () => {
     return (
         <>
-            <Text>Header</Text>
             <Stack>
                 <Stack.Screen name="address"
                     options={{
@@ -19,9 +19,7 @@ const PageLayout = () => {
                     }}
                 />
             </Stack>
-
             <StatusBar style="auto" />
-
         </>
     )
 }

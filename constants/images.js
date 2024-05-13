@@ -8,5 +8,6 @@ import empty from "../assets/images/empty.png";
 import onboarding1 from "../assets/images/onboarding1.png";
 import onboarding2 from "../assets/images/onboarding2.png";
 import banner from "../assets/images/banner.png";
+import noaddress from "../assets/images/noaddress.png";
 
-export default { profile, thumbnail, cards, path, logo, logoSmall, empty, onboarding1, onboarding2, banner};
+export default { profile, thumbnail, cards, path, logo, logoSmall, empty, onboarding1, onboarding2, banner, noaddress};

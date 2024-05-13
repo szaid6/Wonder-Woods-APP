@@ -11,6 +11,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet from '@gorhom/bottom-sheet'
 import ShopByRoom from '../../components/ShopByRoom';
 import RecentlyViewed from '../../components/RecentlyViewed';
+import * as Animatable from 'react-native-animatable';
+import Banner from '../../components/Banner';
 
 const Home = () => {
   const snapPoints = useMemo(() => ['25%', '50%', '75%'], [])
@@ -171,7 +173,14 @@ const Home = () => {
           />
         </View>
 
-        {/* Banner */}
+        {/* Dynamic Banners */}
+        <View className="w-full h-64 mt-3">
+          <Banner
+            items={[{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]}
+          />
+        </View>
+
+        {/*Static Banner */}
         <View className="w-full h-36 mt-3">
           <Image
             source={images.banner}
