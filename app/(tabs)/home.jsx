@@ -164,11 +164,20 @@ const Home = () => {
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => (
-              <Icon
-                item={item}
-                index={index}
-                selectableFrame={false}
-              />
+              <TouchableOpacity
+                onPress={() => router.push({
+                  pathname: 'category',
+                  params: {
+                    id: item.id
+                  }
+                })}
+              >
+                <Icon
+                  item={item}
+                  index={index}
+                  selectableFrame={false}
+                />
+              </TouchableOpacity>
             )}
           />
         </View>

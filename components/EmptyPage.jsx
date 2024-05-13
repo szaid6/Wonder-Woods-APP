@@ -10,7 +10,7 @@ const EmptyPage = ({ image, title, subTitle, handlePress }) => {
         >
             <Image
                 source={image}
-                className="w-[150px] h-[220px]"
+                className="w-[220px] h-[220px]"
                 resizeMode="contain"
             />
             <Text className="text-2xl font-pbold text-primary-dark mt-4">

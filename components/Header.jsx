@@ -1,24 +1,44 @@
 import { View, Text, TouchableOpacity, TextInput, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import icons from '../constants/icons'
 import { router } from 'expo-router'
 
-const Header = ({ showTitle, title, showBackButton, showNotificationIcon, showSearchBar, searchBarEditable }) => {
+const Header = ({ showTitle, title, showBackButton, showNotificationIcon, showSearchBar, searchBarEditable, onSearchQueryChange }) => {
     const [form, setForm] = useState({
         search: '',
     })
+
+    // Ref for the search input field
+    const searchInputRef = useRef(null);
 
     const handlePress = () => {
         console.log('Search bar pressed');
         // navigate to search page
         if (!searchBarEditable) {
-            router.push('search')
-        } else {
-            console.log('Search functionality');
-            // search functionality
+            router.push('/search')
         }
     }
 
+    if (searchBarEditable) {
+
+        useEffect(() => {
+            // Focus the search input field when the component mounts
+            if (searchInputRef.current) {
+                searchInputRef.current.focus();
+            }
+        }, []); // Empty dependency array ensures this effect runs only once after the component mounts
+    }
+
+
+    const handleSearchInputChange = (text) => {
+        setForm({ ...form, search: text })
+
+        // search query
+        console.log('Search query:', text);
+        if (onSearchQueryChange) {
+            onSearchQueryChange(text); // Call the callback function with the new search query
+        }
+    }
     return (
         <>
             {!showSearchBar &&
@@ -47,12 +67,14 @@ const Header = ({ showTitle, title, showBackButton, showNotificationIcon, showSe
                 {showSearchBar && (
                     <>
                         <TextInput
+                            ref={searchInputRef}
                             className="w-full pl-10 pb-1 pt-2 text-base text-tertiary-darker relative font-pmedium border-2 rounded-lg border-primary"
                             placeholder="Search Wonder Woods"
                             placeholderTextColor={'#F9B678'}
                             value={form.search}
                             keyboardType="default"
                             onPress={handlePress}
+                            onChangeText={handleSearchInputChange}
                         />
 
                         <Image
@@ -76,7 +98,7 @@ const Header = ({ showTitle, title, showBackButton, showNotificationIcon, showSe
                     className="h-12 flex-none w-10"
                 >
                     <TouchableOpacity
-                        onPress={() => router.push('notification')}
+                        onPress={() => router.push('/notification')}
                         className="h-12 rounded-lg flex justify-center items-center"
                     >
                         <Image
