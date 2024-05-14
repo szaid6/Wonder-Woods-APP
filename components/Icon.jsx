@@ -6,20 +6,21 @@ import images from '../constants/images'
 const Icon = ({ item, index, selectableFrame }) => {
     return (
         <View className={`w-24 h-[110px] flex items-center mr-1 ${index === 0 ? 'ml-4' : ''}`}>
-            <Image
-                source={images.logo}
-                className="w-[70px] h-[70px] mt-1 rounded-lg mb-1"
-                resizeMode='contain'
-            />
+            <View className={`w-[76px] h-[76px] rounded-lg bg-white flex items-center justify-center ${selectableFrame ? 'border-2 border-tertiary-dark' : ''}`}>
+                <Image
+                    source={images.logo}
+                    className="w-[70px] h-[70px] mt-1 rounded-lg mb-1 border-2"
+                    resizeMode='contain'
+                />
+            </View>
             <Text
                 numberOfLines={2}
-                className="text-xs text-primary font-psemibold text-center w-24"
+                className={`text-xs mt-1 font-psemibold text-center w-24 ${selectableFrame ? 'text-tertiary-dark' : 'text-primary'} `}
             >
-                {
-                    item.id % 2 === 0 ? "Category" : "Category Name will be here"
-                }
+                {item.name}
             </Text>
         </View>
+        
     )
 }
 
