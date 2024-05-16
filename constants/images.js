@@ -11,5 +11,23 @@ import banner from "../assets/images/banner.png";
 import noaddress from "../assets/images/noaddress.png";
 import notification from "../assets/images/notifications.png";
 import search from "../assets/images/search.png";
+import emptyCart from "../assets/images/emptyCart.png";
+import emptyWishlist from "../assets/images/emptyWishlist.png";
 
-export default { profile, thumbnail, cards, path, logo, logoSmall, empty, onboarding1, onboarding2, banner, noaddress, notification, search};
+export default {
+    profile,
+    thumbnail,
+    cards,
+    path,
+    logo,
+    logoSmall,
+    empty,
+    onboarding1,
+    onboarding2,
+    banner,
+    noaddress,
+    notification,
+    search,
+    emptyCart,
+    emptyWishlist,
+};

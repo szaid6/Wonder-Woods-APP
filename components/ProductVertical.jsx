@@ -117,6 +117,7 @@ const ProductVertical = ({ item }) => {
                                         key={c.id}
                                         className="w-6 h-6 rounded-full"
                                         style={{ backgroundColor: c.color }}
+                                        activeOpacity={1}
                                     ></TouchableOpacity>
                                 ))}
                             </View>
