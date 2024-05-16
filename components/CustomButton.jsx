@@ -1,7 +1,8 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
+import icons from '../constants/icons'
 
-const CustomButton = ({ title, handlePress, containerStyles, textStyles, isLoading }) => {
+const CustomButton = ({ title, handlePress, containerStyles, textStyles, isLoading, leftIcon, rightIcon }) => {
     return (
         <TouchableOpacity
             onPress={handlePress}
@@ -11,6 +12,24 @@ const CustomButton = ({ title, handlePress, containerStyles, textStyles, isLoadi
             <Text className={`font-psemibold text-center py-2 px-4 ${textStyles}`}>
                 {title}
             </Text>
+            {
+                leftIcon &&
+                <Image
+                    source={icons[leftIcon]}
+                    resizeMode='contain'
+                    className="w-6 h-6 ml-3"
+                    style={{ tintColor: '#E45412' }}
+                />
+            }
+            {
+                rightIcon &&
+                <Image
+                    source={icons[rightIcon]}
+                    resizeMode='contain'
+                    className="w-6 h-6 mr-3"
+                    style={{ tintColor: '#E45412' }}
+                />
+            }
         </TouchableOpacity>
     )
 }
