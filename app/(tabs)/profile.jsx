@@ -36,7 +36,7 @@ const Profile = () => {
           {/* Login and security */}
           <CustomButton
             title="Login & Security"
-            handlePress={() => router.push('/login-security')}
+            handlePress={() => router.push('/password-update')}
             containerStyles="bg-secondary-light rounded-md w-full mt-3 flex flex-row items-center justify-between"
             textStyles="text-[16px] text-tertiary-light"
             rightIcon="rightArrowThin"

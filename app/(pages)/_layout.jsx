@@ -44,6 +44,11 @@ const PageLayout = () => {
                         headerShown: false
                     }}
                 />
+                <Stack.Screen name="password-update"
+                    options={{
+                        headerShown: false
+                    }}
+                />
             </Stack>
             <StatusBar style="auto" />
         </>
