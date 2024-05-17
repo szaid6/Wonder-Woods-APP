@@ -13,6 +13,7 @@ import notification from "../assets/images/notifications.png";
 import search from "../assets/images/search.png";
 import emptyCart from "../assets/images/emptyCart.png";
 import emptyWishlist from "../assets/images/emptyWishlist.png";
+import blank from "../assets/images/blank.png";
 
 export default {
     profile,
@@ -30,4 +31,5 @@ export default {
     search,
     emptyCart,
     emptyWishlist,
+    blank,
 };

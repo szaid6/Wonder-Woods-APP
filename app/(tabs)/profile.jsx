@@ -29,60 +29,61 @@ const Profile = () => {
           <CustomButton
             title="Profile"
             handlePress={() => router.push('/profile-details')}
-            containerStyles="bg-secondary-light rounded-md w-full mt-4 flex flex-row items-center justify-between"
+            containerStyles="bg-secondary-light rounded-md w-full flex flex-row items-center justify-between"
             textStyles="text-[16px] text-tertiary-light"
-            rightIcon="rightArrow"
+            rightIcon="rightArrowThin"
           />
           {/* Login and security */}
           <CustomButton
             title="Login & Security"
             handlePress={() => router.push('/login-security')}
-            containerStyles="bg-secondary-light rounded-md w-full mt-2 flex flex-row items-center justify-between"
+            containerStyles="bg-secondary-light rounded-md w-full mt-3 flex flex-row items-center justify-between"
             textStyles="text-[16px] text-tertiary-light"
-            rightIcon="rightArrow"
+            rightIcon="rightArrowThin"
           />
 
           {/* Addresses */}
           <CustomButton
             title="Your Addresses"
             handlePress={() => router.push('/address')}
-            containerStyles="bg-secondary-light rounded-md w-full mt-2 flex flex-row items-center justify-between"
+            containerStyles="bg-secondary-light rounded-md w-full mt-3 flex flex-row items-center justify-between"
             textStyles="text-[16px] text-tertiary-light"
-            rightIcon="rightArrow"
+            rightIcon="rightArrowThin"
           />
 
           {/* Wishlist */}
           <CustomButton
             title="Wishlist"
             handlePress={() => router.push('/wishlist')}
-            containerStyles="bg-secondary-light rounded-md w-full mt-2 flex flex-row items-center justify-between"
+            containerStyles="bg-secondary-light rounded-md w-full mt-3 flex flex-row items-center justify-between"
             textStyles="text-[16px] text-tertiary-light"
-            rightIcon="rightArrow"
+            rightIcon="rightArrowThin"
           />
 
           {/* Cart */}
           <CustomButton
             title="Cart"
             handlePress={() => router.push('/cart')}
-            containerStyles="bg-secondary-light rounded-md w-full mt-2 flex flex-row items-center justify-between"
+            containerStyles="bg-secondary-light rounded-md w-full mt-3 flex flex-row items-center justify-between"
             textStyles="text-[16px] text-tertiary-light"
-            rightIcon="rightArrow"
+            rightIcon="rightArrowThin"
           />
 
           {/* Orders */}
           <CustomButton
             title="Orders"
             handlePress={() => router.push('/orders')}
-            containerStyles="bg-secondary-light rounded-md w-full mt-2 flex flex-row items-center justify-between"
+            containerStyles="bg-secondary-light rounded-md w-full mt-3 flex flex-row items-center justify-between"
             textStyles="text-[16px] text-tertiary-light"
-            rightIcon="rightArrow"
+            rightIcon="rightArrowThin"
           />
 
           <CustomButton
             title="Log Out"
             handlePress={logout}
-            containerStyles="bg-secondary-light rounded-md w-1/2 mt-10"
+            containerStyles="bg-secondary-light rounded-md w-1/2 mt-10 flex flex-row items-center justify-center"
             textStyles="text-[16px] text-tertiary-light"
+            leftIcon="logout"
           />
         </View>
       </ScrollView>

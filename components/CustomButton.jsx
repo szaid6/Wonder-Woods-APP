@@ -9,9 +9,6 @@ const CustomButton = ({ title, handlePress, containerStyles, textStyles, isLoadi
             disabled={isLoading}
             activeOpacity={0.8}
             className={`border-2 border-primary rounded-xl ${containerStyles} ${isLoading ? 'opacity-50' : ''}`} >
-            <Text className={`font-psemibold text-center py-2 px-4 ${textStyles}`}>
-                {title}
-            </Text>
             {
                 leftIcon &&
                 <Image
@@ -21,6 +18,9 @@ const CustomButton = ({ title, handlePress, containerStyles, textStyles, isLoadi
                     style={{ tintColor: '#E45412' }}
                 />
             }
+            <Text className={`font-psemibold text-center py-2 px-4 ${textStyles}`}>
+                {title}
+            </Text>
             {
                 rightIcon &&
                 <Image

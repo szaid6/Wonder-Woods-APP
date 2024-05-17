@@ -39,7 +39,11 @@ const PageLayout = () => {
                         headerShown: false
                     }}
                 />
-                
+                <Stack.Screen name="profile-details"
+                    options={{
+                        headerShown: false
+                    }}
+                />
             </Stack>
             <StatusBar style="auto" />
         </>
