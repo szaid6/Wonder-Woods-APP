@@ -6,6 +6,7 @@ import Header from '../../components/Header'
 import images from '../../constants/images'
 // file picker
 import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router'
 
 const ProfileDetails = () => {
     const [form, setForm] = useState({
@@ -18,6 +19,14 @@ const ProfileDetails = () => {
 
     const updateProfile = () => {
         console.log('updating profile');
+
+        setIsSubmitting(true);
+        setTimeout(() => {
+            setIsSubmitting(false);
+
+            // go back to the previous screen
+            router.back();
+        }, 2000);
     }
 
     const { image, setImage } = useState(null);
@@ -29,20 +38,27 @@ const ProfileDetails = () => {
             return;
         }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
+        // // To open the file manager
+        // const result = await ImagePicker.launchImageLibraryAsync({
+        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //     allowsEditing: true,
+        //     aspect: [1, 1],
+        //     quality: 1,
+        //     base64: true,
+        // });
+
+        // To open the camera
+        const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
+            base64: true,
         });
-
-        console.log(result);
 
         if (!result.canceled) {
             setForm({ ...form, image: result['assets'][0]['uri'] });
         }
-
-        console.log('image uri', form.image);
     }
 
     return (
