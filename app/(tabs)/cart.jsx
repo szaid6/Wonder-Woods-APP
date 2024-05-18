@@ -50,11 +50,18 @@ const Cart = () => {
     console.log('====================================');
     console.log('Checkout', cart);
     console.log('====================================');
-    // router.push('checkout', { cart })
+    router.push({
+      pathname: 'checkout',
+      params: {
+        cart: cart
+      }
+    })
   }
 
   return (
-    <>
+    <View
+      className="flex-1 px-2 bg-white"
+    >
       <FlatList
         data={cart}
         keyExtractor={(item, index) => index.toString()}
@@ -112,7 +119,7 @@ const Cart = () => {
         )}
       >
       </FlatList>
-    </>
+    </View>
   )
 }
 

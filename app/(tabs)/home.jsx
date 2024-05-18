@@ -136,11 +136,18 @@ const Home = () => {
   ]
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <GestureHandlerRootView
+      className="flex-1 bg-white"
+    >
       <ScrollView>
         {/* Address Bar */}
         <TouchableWithoutFeedback
-          onPress={() => router.push('/address')}
+          onPress={() => router.push({
+            pathname: 'address',
+            params: {
+              redirectBackTo: 'home'
+            }
+          })}
         >
           <View className="w-full h-12 px-4 flex flex-row items-center bg-secondary-lighter">
             {/* location icon */}
@@ -266,9 +273,22 @@ const Home = () => {
           </Text>
           <View className="flex flex-row flex-wrap justify-between px-4">
             {products.map((product) => (
-              <ProductVertical
-                item={product}
-              />
+              // log
+              // console.log('product', product.id),
+              <TouchableOpacity
+                activeOpacity={1}
+                // onPress={() => console.log('Product Detail Clicked')}
+                onPress={() => router.push({
+                  pathname: 'product-detail',
+                  params: {
+                    id: product.id
+                  }
+                })}
+              >
+                <ProductVertical
+                  item={product}
+                />
+              </TouchableOpacity>
             ))}
 
           </View>

@@ -27,6 +27,8 @@ import mail from "../assets/icons/mail.png";
 import phone from "../assets/icons/phone.png";
 import bell from "../assets/icons/bell.png";
 import location from "../assets/icons/location.png";
+import starOutline from "../assets/icons/star-outline.png";
+import starSolid from "../assets/icons/star-solid.png";
 
 export default {
   play,
@@ -58,4 +60,6 @@ export default {
   phone,
   bell,
   location,
+  starOutline,
+  starSolid,
 };

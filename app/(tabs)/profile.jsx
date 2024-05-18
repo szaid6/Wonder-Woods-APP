@@ -20,7 +20,7 @@ const Profile = () => {
   }
 
   return (
-    <SafeAreaView className="h-full" >
+    <SafeAreaView className="h-full bg-white" >
       <ScrollView>
         <View
           className="flex flex-col items-center mx-4 justify-center"

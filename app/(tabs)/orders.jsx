@@ -77,7 +77,7 @@ const Orders = () => {
   ]
 
   return (
-    <SafeAreaView className="h-full" >
+    <SafeAreaView className="h-full bg-white" >
       <View
         className="flex flex-col items-center mx-4 pt-3 justify-center"
       >

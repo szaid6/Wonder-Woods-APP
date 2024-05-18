@@ -35,6 +35,7 @@ const TabsLayout = () => {
         />
       </View>
 
+      {/* Allow sliding between screens */}
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,

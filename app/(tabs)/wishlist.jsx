@@ -42,7 +42,9 @@ const Wishlist = () => {
   }
 
   return (
-    <>
+    <View
+      className="flex-1 px-2 bg-white"
+    >
       {wishlist.length == 0 && (
         <EmptyPage
           image={images.emptyWishlist}
@@ -77,7 +79,7 @@ const Wishlist = () => {
         )}
       >
       </FlatList>
-    </>
+    </View>
   )
 }
 
