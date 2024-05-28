@@ -13,9 +13,15 @@ import ShopByRoom from '../../components/ShopByRoom';
 import RecentlyViewed from '../../components/RecentlyViewed';
 import * as Animatable from 'react-native-animatable';
 import Banner from '../../components/Banner';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const snapPoints = useMemo(() => ['25%', '50%', '75%'], [])
+
+  AsyncStorage.getItem('user')
+    .then((user) => {
+      console.log('Logged In User: ', user)
+    })
 
   const products = [
     {

@@ -6,6 +6,7 @@ import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton';
 import { Link, router } from 'expo-router'
 import { useGlobalContext } from '../../context/GlobalProvider'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const SignIn = () => {
 
@@ -66,10 +67,12 @@ const SignIn = () => {
           data.message,
           ToastAndroid.SHORT
         )
-        setTimeout(() => {
-          setIsSubmitting(false)
-          router.push('/home')
-        }, 1000)
+
+        // save the token in the async storage
+        AsyncStorage.setItem('token', JSON.stringify(data.token))
+        AsyncStorage.setItem('user', JSON.stringify(data.user))
+
+        router.push('/home')
       })
       .catch((error) => {
         console.error('Error:', error)

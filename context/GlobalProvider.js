@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useState, useEffect } from "react";
 
 const GlobalContext = createContext();
@@ -10,11 +11,16 @@ const GlobalProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // check if the user is authenticated
-        // if the user is authenticated, setIsAuthenticated to true
-        // else, setIsAuthenticated to false
-        setIsAuthenticated(false);
-        setIsLoading(false);
+        AsyncStorage.getItem('token')
+            .then((token) => {
+                if (token) {
+                    setIsAuthenticated(true);
+                    setIsLoading(false);
+                } else {
+                    setIsAuthenticated(false);
+                    setIsLoading(false);
+                }
+            })
     }, [])
 
     return (

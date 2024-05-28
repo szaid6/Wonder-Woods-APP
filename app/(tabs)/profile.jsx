@@ -5,6 +5,7 @@ import { useGlobalContext } from '../../context/GlobalProvider'
 import { Redirect, router } from 'expo-router'
 import CustomButton from '../../components/CustomButton'
 import icons from '../../constants/icons'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const Profile = () => {
@@ -13,10 +14,12 @@ const Profile = () => {
   const logout = () => {
     console.log('logging out ' + isAuthenticated)
 
-    setIsAuthenticated(false)
-
-    router.replace('/sign-in');
-
+    // remove the token from the local storage
+    AsyncStorage.removeItem('token').then(() => {
+      setIsAuthenticated(false)
+      router.replace('/sign-in');
+    })
+    AsyncStorage.removeItem('user')
   }
 
   return (
