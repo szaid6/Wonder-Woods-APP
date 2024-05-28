@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, Alert } from 'react-native'
+import { View, Text, ScrollView, Image, Alert, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import images from '../../constants/images'
@@ -24,40 +24,57 @@ const SignIn = () => {
 
     // issue an alert if the form is not valid
     if (!form.phone || !form.password) {
-      Alert.alert('Error', 'Please fill in all fields')
+      ToastAndroid.show([
+        !form.phone ? 'Phone number is required' : '',
+        !form.password ? 'Password is required' : ''
+      ].join('\n'), ToastAndroid.LONG)
       setIsSubmitting(false)
       return
     }
 
-    setIsSubmitting(false)
-    setIsAuthenticated(true);
-    router.replace('/home')
+    // setIsSubmitting(false)
+    // setIsAuthenticated(true);
+    // router.replace('/home')
 
-    // const data = {
-    //   phone: form.phone,
-    //   password: form.password
-    // }
+    const data = {
+      phone: form.phone,
+      password: form.password
+    }
 
-    // fetch('http://127.0.0.1:8000/api/login', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     console.log('Success:', data)
+    fetch('http://wonderwoods.aps.org.in/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data)
 
-    //     setTimeout(() => {
-    //       setIsSubmitting(false)
-    //       router.push('/home')
-    //     }, 2000)
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error:', error)
-    //     setIsSubmitting(false)
-    //   })
+        if (data.status !== 200) {
+          setIsSubmitting(false)
+          ToastAndroid.show(
+            data.message,
+            ToastAndroid.LONG
+          )
+          return
+        }
+
+        setIsAuthenticated(true)
+        ToastAndroid.show(
+          data.message,
+          ToastAndroid.SHORT
+        )
+        setTimeout(() => {
+          setIsSubmitting(false)
+          router.push('/home')
+        }, 1000)
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+        setIsSubmitting(false)
+      })
 
 
   }

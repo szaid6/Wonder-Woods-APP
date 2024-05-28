@@ -1,10 +1,10 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import images from '../../constants/images'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton';
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
 
 
 const ForgetPassword = () => {
@@ -15,6 +15,66 @@ const ForgetPassword = () => {
     })
 
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const submit = () => {
+        setIsSubmitting(true)
+
+        if (!form.email || !form.password || !form.confirmPassword) {
+            ToastAndroid.show([
+                !form.email ? 'Email is required' : '',
+                !form.password ? 'Password is required' : '',
+                !form.confirmPassword ? 'Confirm Password is required' : ''
+            ].join('\n'), ToastAndroid.LONG)
+            setIsSubmitting(false)
+            return
+        }
+
+        if (form.password !== form.confirmPassword) {
+            ToastAndroid.show('Passwords do not match', ToastAndroid.LONG)
+            setIsSubmitting(false)
+            return
+        }
+
+        const data = {
+            email: form.email,
+            password: form.password
+        }
+
+        // send the form data to the server
+        fetch('http://wonderwoods.aps.org.in/api/forget-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(form)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data)
+
+                if (data.status !== 200) {
+                    setIsSubmitting(false)
+                    ToastAndroid.show(
+                        data.message,
+                        ToastAndroid.LONG
+                    )
+                    return
+                }
+
+                ToastAndroid.show(
+                    data.message,
+                    ToastAndroid.LONG
+                )
+
+                router.back()
+
+                setIsSubmitting(false)
+
+            })
+
+        setIsSubmitting(false)
+    }
+
     return (
         <>
             <SafeAreaView className="h-full">
@@ -74,7 +134,7 @@ const ForgetPassword = () => {
                                     title="CHANGE PASSWORD"
                                     containerStyles="w-3/4 mt-8 mb-5"
                                     textStyles="text-lg text-tertiary-light"
-                                    handlePress={() => { }}
+                                    handlePress={submit}
                                     isLoading={isSubmitting}
                                 >
                                 </CustomButton>

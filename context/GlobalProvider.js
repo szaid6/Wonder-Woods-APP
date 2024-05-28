@@ -13,7 +13,7 @@ const GlobalProvider = ({ children }) => {
         // check if the user is authenticated
         // if the user is authenticated, setIsAuthenticated to true
         // else, setIsAuthenticated to false
-        setIsAuthenticated(true);
+        setIsAuthenticated(false);
         setIsLoading(false);
     }, [])
 
