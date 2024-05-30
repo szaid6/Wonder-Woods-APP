@@ -1,21 +1,58 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useMemo, useState } from 'react'
 import icons from '../constants/icons'
-import images from '../constants/images'
-import BottomSheet from '@gorhom/bottom-sheet'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import CustomButton from './CustomButton'
 import ImageButton from './ImageButton'
+import { router } from 'expo-router'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const ProductVertical = ({ item }) => {
-
-    const snapPoints = useMemo(() => ['25%', '50%', '75%'], [])
 
     const [isAddedToCart, setIsAddedToCart] = useState(false);
     const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
 
+    // Function to save a product to "recently visited" list
+    const saveProductToRecentlyVisited = async (product) => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('recentlyVisited');
+            let recentlyVisited = jsonValue != null ? JSON.parse(jsonValue) : [];
+            // Only save the necessary fields
+            const { id, image, name } = product;
+
+            // Remove product if it's already in the list
+            recentlyVisited = recentlyVisited.filter(item => item.id !== product.id);
+
+            // Add the product to the start of the list
+            recentlyVisited.unshift({ id, image, name });
+
+            // Keep only the latest 4 products
+            if (recentlyVisited.length > 4) {
+                recentlyVisited.pop();
+            }
+
+            // Save updated list back to AsyncStorage
+            await AsyncStorage.setItem('recentlyVisited', JSON.stringify(recentlyVisited));
+        } catch (e) {
+            console.error('Error saving product to recently visited', e);
+        }
+    };
+
+
+
     const goToProductDetails = () => {
         console.log("Go To Product Details");
+
+        // Save the product to "recently visited" list
+        saveProductToRecentlyVisited(item);
+
+        // Navigate to the product details screen
+        router.push({
+            pathname: 'product-detail',
+            params: {
+                id: item.id
+            }
+        })
+
     }
 
     const addToCart = () => {
@@ -43,72 +80,101 @@ const ProductVertical = ({ item }) => {
             >
                 <View>
                     {/* Cover Image */}
-                    <View
-                        className="w-[180px] h-[180px] rounded-lg bg-gray-200"
+                    <TouchableOpacity
+                        onPress={goToProductDetails}
+                        activeOpacity={1}
                     >
-                        <Image
-                            source={item.image}
-                            className="w-full h-full rounded-lg opacity-80"
-                            resizeMode='contain'
-                        />
-                        {item.tag && item.tag.length > 0 &&
-                            <View
-                                className="h-5 absolute top-3 left-2 bg-secondary-lighter flex rounded-md items-center justify-center"
-                            >
-                                <Text
-                                    className="text-xs px-2 text-primary font-psemibold"
+                        <View
+                            className="w-[180px] h-[180px] rounded-lg bg-gray-200"
+                        >
+                            <Image
+                                source={{ uri: `http://wonderwoods.aps.org.in/${item.image}` }}
+                                className="w-full h-full rounded-lg"
+                                resizeMode='cover'
+                            />
+                            {item.tag && item.tag.length > 0 &&
+                                <View
+                                    className="h-5 absolute top-3 left-2 bg-secondary-lighter flex rounded-md items-center justify-center"
                                 >
-                                    {item.tag}
-                                </Text>
-                            </View>
-                        }
-                    </View>
+                                    <Text
+                                        className="text-xs px-2 text-primary font-psemibold"
+                                    >
+                                        {item.tag}
+                                    </Text>
+                                </View>
+                            }
+                        </View>
+                    </TouchableOpacity>
                     {/* Product Details */}
                     <View
                         className="w-[180px] mt-2"
                     >
-                        <Text
-                            numberOfLines={2}
-                            className="text-xs text-primary font-psemibold"
-                        > {item.title} </Text>
-                        {/* Product Pricing */}
-                        <View
-                            className="flex flex-row mt-2 h-8"
+                        <TouchableOpacity
+                            onPress={goToProductDetails}
+                            activeOpacity={1}
                         >
                             <Text
-                                className="text-2xl text-tertiary-light font-psemibold"
-                            >
-                                <Text
-                                    className="text-[12px] text-tertiary-light font-psemibold"
-                                >₹</Text>
-                                {Number(item.price).toLocaleString('en-IN')}
-                            </Text>
+                                numberOfLines={2}
+                                className="text-xs text-primary font-psemibold"
+                            > {item.name} </Text>
+                            {/* Product Pricing */}
                             <View
-                                className="flex flex-col justify-between ml-1"
+                                className="flex flex-row mt-2 h-8"
                             >
                                 <Text
-                                    className="text-[12px] h-4 line-through text-primary-light font-psemibold"
+                                    className="text-2xl text-tertiary-light font-psemibold"
                                 >
                                     <Text
-                                        className="text-[10px] text-primary font-psemibold"
+                                        className="text-[12px] text-tertiary-light font-psemibold"
                                     >₹</Text>
-                                    {Number(item.mrp).toLocaleString('en-IN')}
+                                    {Number(item.discountedPrice).toLocaleString('en-IN')}
                                 </Text>
-                                <Text
-                                    className="text-[10px] h-4 text-primary font-psemibold"
+                                <View
+                                    className="flex flex-col justify-between ml-1"
                                 >
-                                    -{item.mrp > 0 ? Math.round(((item.mrp - item.price) / item.mrp) * 100) : 0}
-                                    <Text>%</Text>
-                                </Text>
+                                    <Text
+                                        className="text-[12px] h-4 line-through text-primary-light font-psemibold"
+                                    >
+                                        <Text
+                                            className="text-[10px] text-primary font-psemibold"
+                                        >₹</Text>
+                                        {Number(item.mrp).toLocaleString('en-IN')}
+                                    </Text>
+                                    <Text
+                                        className="text-[10px] h-4 text-primary font-psemibold"
+                                    >
+                                        -{item.mrp > 0 ? Math.round(((item.mrp - item.discountedPrice) / item.mrp) * 100) : 0}
+                                        <Text>%</Text>
+                                    </Text>
+                                </View>
                             </View>
-                        </View>
 
-                        {/* Colors and Sizes */}
-                        <View
-                            className="text-primary flex flex-row justify-between items-center font-psemibold mt-2"
-                        >
-                            {/* Colors */}
+                            {/* Colors and Sizes */}
                             <View
+                                className="text-primary font-psemibold mt-2"
+                            >
+                                <View
+                                    className="flex flex-row items-center justify-between gap-x-1"
+                                >
+                                    <Text
+                                        className="text-[12px] text-tertiary-light font-psemibold"
+                                    >Color:</Text>
+                                    <Text
+                                        className="text-[12px] text-tertiary font-psemibold"
+                                    >{item.color.name}</Text>
+                                </View>
+                                <View
+                                    className="flex flex-row items-center justify-between gap-x-1"
+                                >
+                                    <Text
+                                        className="text-[12px] text-tertiary-light font-psemibold"
+                                    >Size:</Text>
+                                    <Text
+                                        className="text-[12px] text-tertiary font-psemibold"
+                                    >{item.size.name}</Text>
+                                </View>
+                                {/* Colors */}
+                                {/* <View
                                 className="flex flex-row gap-x-1"
                             >
                                 {item.colors.map((c) => (
@@ -120,17 +186,17 @@ const ProductVertical = ({ item }) => {
                                         activeOpacity={1}
                                     ></TouchableOpacity>
                                 ))}
-                            </View>
+                            </View> */}
 
-                            {/* Sizes */}
-                            <View
+                                {/* Sizes */}
+                                {/* <View
                                 className="w-[80px] bg-secondary-light rounded-lg px-2">
                                 <Text
                                     className="text-[10px] text-center text-tertiary font-psemibold"
                                 >Available Sizes</Text>
+                            </View> */}
                             </View>
-                        </View>
-
+                        </TouchableOpacity>
                         {/* Add to Cart and Wishlist */}
                         <View
                             className="flex flex-row justify-between mt-2"

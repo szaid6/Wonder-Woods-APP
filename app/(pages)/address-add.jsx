@@ -1,10 +1,11 @@
 import { View, Text, ScrollView, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '../../components/Header';
 import { router } from 'expo-router';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddressAdd = () => {
 
@@ -20,6 +21,53 @@ const AddressAdd = () => {
     landmark: '',
     type: ''
   })
+
+  // get current user from AsyncStorage
+  const [user, setUser] = useState(null)
+  useEffect(() => {
+    AsyncStorage.getItem('user')
+      .then((user) => {
+        const userData = JSON.parse(user)
+        setUser(userData)
+      })
+  }, [])
+
+  // save address to server
+  const saveAddress = () => {
+
+    fetch('http://wonderwoods.aps.org.in/api/address/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: user.id,
+        name: form.name,
+        phone: form.phone,
+        address1: form.address1,
+        address2: form.address2,
+        city: form.city,
+        state: form.state,
+        district: form.district,
+        pincode: form.pincode,
+        landmark: form.landmark,
+        type: form.type
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 200) {
+          console.log('Success:', data);
+          router.back();
+        } else {
+          console.error('Error:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
+  }
 
   return (
     <>
@@ -158,7 +206,7 @@ const AddressAdd = () => {
           title="ADD ADDRESS"
           containerStyles="w-full bg-primary rounded-sm"
           textStyles="text-lg text-white"
-          handlePress={() => router.push('address')}
+          handlePress={saveAddress}
         />
       </View>
     </>

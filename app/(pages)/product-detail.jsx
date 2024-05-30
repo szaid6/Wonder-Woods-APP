@@ -10,141 +10,39 @@ import CustomButton from '../../components/CustomButton';
 import ProductVertical from '../../components/ProductVertical';
 
 const ProductDetail = () => {
-    const products = [
-        {
-            id: 1,
-            image: images.logo,
-            title: 'Product 1',
-            tag: 'New Arrival',
-            price: '10000',
-            mrp: '12000',
-            vendor: 'Nike',
-            colors: [
-                {
-                    id: 1,
-                    color: '#000000',
-                },
-                {
-                    id: 2,
-                    color: '#FFFFFF',
-                },
-                {
-                    id: 3,
-                    color: '#FF0000',
-                },
-            ]
-        },
-        {
-            id: 2,
-            image: images.logo,
-            title: 'Product 2',
-            tag: 'New',
-            price: '20000',
-            mrp: '22000',
-            vendor: 'Nike',
-            colors: [
-                {
-                    id: 1,
-                    color: '#000000',
-                },
-                {
-                    id: 2,
-                    color: '#FFFFFF',
-                },
-                {
-                    id: 3,
-                    color: '#FF0000',
-                },
-            ]
-        },
-        {
-            id: 3,
-            image: images.logo,
-            title: 'Product 3',
-            tag: 'Discounted',
-            price: '30000',
-            mrp: '32000',
-            vendor: 'Nike',
-            colors: [
-                {
-                    id: 1,
-                    color: '#000000',
-                },
-                {
-                    id: 2,
-                    color: '#FFFFFF',
-                },
-                {
-                    id: 3,
-                    color: '#FF0000',
-                },
-            ]
-        },
-        {
-            id: 4,
-            image: images.logo,
-            title: 'Product 4',
-            tag: 'Latest',
-            price: '40000',
-            mrp: '42000',
-            vendor: 'Nike',
-            colors: [
-                {
-                    id: 1,
-                    color: '#000000',
-                },
-                {
-                    id: 2,
-                    color: '#FFFFFF',
-                },
-                {
-                    id: 3,
-                    color: '#FF0000',
-                },
-            ]
-        },
-        {
-            id: 5,
-            image: images.logo,
-            title: 'Product 5',
-            tag: 'Branded',
-            price: '50000',
-            mrp: '52000',
-            vendor: 'Nike',
-            colors: [
-                {
-                    id: 1,
-                    color: '#000000',
-                },
-                {
-                    id: 2,
-                    color: '#FFFFFF',
-                },
-                {
-                    id: 3,
-                    color: '#FF0000',
-                },
-            ]
-        }
-    ]
+
     // Get the item from the navigation
     const params = useLocalSearchParams();
 
-    // conver the stringified object to JSON
-
     const productId = params.id;
+    console.log(productId);
 
     const [product, setProduct] = useState({})
+    const [similarProducts, setSimilarProducts] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        const product = products.find(product => product.id === Number(productId));
-        setProduct(product)
-    }, [productId])
-
-    console.log(product);
+        // fetch the product details from the API
+        fetch(`http://wonderwoods.aps.org.in/api/product/${productId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                setProduct(data.data);
+                setSimilarProducts(data.similarProducts);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }, [])
 
     const maxRating = 5;
-    const fullStars = Math.floor(4);
+    const fullStars = Math.floor(product.averageRating);
     const emptyStars = maxRating - fullStars;
 
     const addToWishlist = () => {
@@ -167,104 +65,121 @@ const ProductDetail = () => {
                     searchBarEditable={false}
                 />
             </View>
-            <SafeAreaView
-                className="w-full  flex-1 bg-white"
-            >
-                <ScrollView>
-                    <View
-                        className="py-3 pb-[100px] "
+
+            {/* manage loading */}
+
+            {isLoading && (
+                <View
+                    className="flex flex-1 items-center justify-center bg-white"
+                >
+                    <Text
+                        className="text-[20px] font-psemibold text-primary-dark"
                     >
-                        <View className="w-full px-3 h-72 bg-white">
-                            <Image
-                                source={images.logo}
-                                className="w-full h-full bg-gray-200 rounded-lg"
-                                resizeMode='contain'
-                            />
-                        </View>
-                        
-                        <View className="px-5 pt-4">
+                        Loading...
+                    </Text>
+                </View>
+            )}
+
+            {
+                !isLoading && (
+                    <SafeAreaView
+                        className="w-full  flex-1 bg-white"
+                    >
+                        <ScrollView>
                             <View
-                                className="flex flex-row items-center justify-between"
+                                className="py-3 pb-[100px] "
                             >
-                                {/* Vendor Name */}
-                                <Text className="text-[14px] font-psemibold text-tertiary-light">{product.vendor}</Text>
-                                {/* ratings with star and count */}
-                                <View className="flex flex-row h-[22px] items-center justify-between">
-                                    <Text className="text-[14px] font-psemibold text-tertiary-light">
-                                        4 {``}
-                                    </Text>
-                                    <View className="flex flex-row items-center">
-                                        {/* add stars-solid and stars-outline accordingly */}
-                                        {Array.from({ length: fullStars }).map((_, index) => (
-                                            <Image
-                                                key={`full-${index}`}
-                                                source={icons.starSolid}
-                                                className="w-4 h-4"
-                                                resizeMode='contain'
-                                                tintColor={'#E45412'}
-                                            />
-                                        ))}
-                                        {Array.from({ length: emptyStars }).map((_, index) => (
-                                            <Image
-                                                key={`empty-${index}`}
-                                                source={icons.starOutline}
-                                                className="w-4 h-4"
-                                                resizeMode='contain'
-                                                tintColor={'#E45412'}
-                                            />
-                                        ))}
-                                    </View>
-                                    <Text className="text-[14px] font-psemibold text-tertiary-light">
-                                        {``} (200)
-                                    </Text>
+                                <View className="w-full flex-row  px-3 h-72 bg-white">
+                                    <Image
+                                        source={{ uri: `http://wonderwoods.aps.org.in/${product.image}` }}
+                                        className="w-full h-full bg-gray-200 rounded-lg"
+                                        resizeMode='cover'
+                                    />
                                 </View>
-                            </View>
-                            {/* Product Name */}
-                            <Text className="text-[18px] font-pmedium text-primary-dark">{product.title}</Text>
-                            {/* Tags */}
-                            <View
-                                className="flex flex-row items-center justify-between"
-                            >
-                                {/* Vendor Name */}
-                                <Text className="text-[14px] font-psemibold rounded-full px-3 pt-0.5 bg-primary-light text-white">{product.tag}</Text>
-                            </View>
-                            {/* Product Pricing */}
-                            <View
-                                className="flex flex-row mt-2"
-                            >
-                                <Text
-                                    className="text-[40px] text-tertiary-light font-psemibold"
-                                >
-                                    <Text
-                                        className="text-[12px] text-tertiary-light font-psemibold"
-                                    >₹</Text>
-                                    {Number(product.price).toLocaleString('en-IN')}
-                                </Text>
-                                <View
-                                    className="flex ml-1"
-                                >
-                                    <Text
-                                        className="text-[18px] line-through text-primary-light font-psemibold"
+
+                                <View className="px-5 pt-4">
+                                    <View
+                                        className="flex flex-row items-center justify-between"
+                                    >
+                                        {/* Vendor Name */}
+                                        <Text className="text-[14px] font-psemibold text-tertiary-light">{product.company?.name}</Text>
+                                        {/* ratings with star and count */}
+                                        <View className="flex flex-row h-[22px] items-center justify-between">
+                                            <Text className="text-[14px] font-psemibold text-tertiary-light">
+                                                {Math.floor(product.averageRating)} {``}
+                                            </Text>
+                                            <View className="flex flex-row items-center">
+                                                {/* add stars-solid and stars-outline accordingly */}
+                                                {Array.from({ length: fullStars }).map((_, index) => (
+                                                    <Image
+                                                        key={`full-${index}`}
+                                                        source={icons.starSolid}
+                                                        className="w-4 h-4"
+                                                        resizeMode='contain'
+                                                        tintColor={'#E45412'}
+                                                    />
+                                                ))}
+                                                {Array.from({ length: emptyStars }).map((_, index) => (
+                                                    <Image
+                                                        key={`empty-${index}`}
+                                                        source={icons.starOutline}
+                                                        className="w-4 h-4"
+                                                        resizeMode='contain'
+                                                        tintColor={'#E45412'}
+                                                    />
+                                                ))}
+                                            </View>
+                                            <Text className="text-[14px] font-psemibold text-tertiary-light">
+                                                {``} ({product.totalRatings})
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    {/* Product Name */}
+                                    <Text className="text-[18px] font-pmedium text-primary-dark">{product?.name}</Text>
+                                    {/* Tags */}
+                                    <View
+                                        className="flex flex-row items-center justify-between"
+                                    >
+                                        {/* Tag Name */}
+                                        <Text className="text-[14px] font-psemibold rounded-full px-3 pt-0.5 bg-primary-light text-white">{product.tag}</Text>
+                                    </View>
+                                    {/* Product Pricing */}
+                                    <View
+                                        className="flex flex-row mt-2"
                                     >
                                         <Text
-                                            className="text-[10px] text-primary font-psemibold"
-                                        >₹</Text>
-                                        {Number(product.mrp).toLocaleString('en-IN')}
-                                    </Text>
-                                    <Text
-                                        className="text-[15px] text-primary font-psemibold"
-                                    >
-                                        -{product.mrp > 0 ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0}
-                                        <Text>%</Text>
-                                    </Text>
+                                            className="text-[40px] text-tertiary-light font-psemibold"
+                                        >
+                                            <Text
+                                                className="text-[12px] text-tertiary-light font-psemibold"
+                                            >₹</Text>
+                                            {Number(product.discountedPrice).toLocaleString('en-IN')}
+                                        </Text>
+                                        <View
+                                            className="flex ml-1"
+                                        >
+                                            <Text
+                                                className="text-[18px] line-through text-primary-light font-psemibold"
+                                            >
+                                                <Text
+                                                    className="text-[10px] text-primary font-psemibold"
+                                                >₹</Text>
+                                                {Number(product.mrp).toLocaleString('en-IN')}
+                                            </Text>
+                                            <Text
+                                                className="text-[15px] text-primary font-psemibold"
+                                            >
+                                                -{product.mrp > 0 ? Math.round(((product.mrp - product.discountedPrice) / product.mrp) * 100) : 0}
+                                                <Text>%</Text>
+                                            </Text>
+                                        </View>
+                                    </View>
                                 </View>
-                            </View>
-                        </View>
 
-                        <View className="w-full border mb-5 border-secondary"></View>
+                                {/* <View className="w-full border mb-5 border-secondary"></View> */}
 
-                        {/* Sizes */}
-                        <View>
+                                {/* Sizes */}
+                                {/* <View>
                             <Text className="text-[16px] mx-3 font-psemibold text-tertiary-light">
                                 Sizes
                             </Text>
@@ -284,12 +199,12 @@ const ProductDetail = () => {
                                     )}
                                 />
                             </View>
-                        </View>
+                        </View> */}
 
-                        <View className="w-full border my-5 border-secondary"></View>
+                                {/* <View className="w-full border my-5 border-secondary"></View> */}
 
-                        {/* Colors */}
-                        <View>
+                                {/* Colors */}
+                                {/* <View>
                             <Text className="text-[16px] mx-3 font-psemibold text-tertiary-light">
                                 Colors
                             </Text>
@@ -309,192 +224,216 @@ const ProductDetail = () => {
                                     )}
                                 />
                             </View>
-                        </View>
+                        </View> */}
 
-                        <View className="w-full border my-5 border-secondary"></View>
+                                <View className="w-full border my-5 border-secondary"></View>
 
-                        {/* Description */}
-                        <View>
-                            <View
-                                className="bg-secondary-light py-2 flex flex-row items-center justify-center mx-10 rounded-full"
-                            >
-                                <Text
-                                    className="text-[20px] mx-3 font-psemibold text-tertiary-light"
-                                >
-                                    DESCRIPTION
-                                </Text>
-                            </View>
-                            <Text
-                                className="text-[14px] mx-3 font-psemibold text-justify text-primary-dark mt-2 px-2"
-                            >
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio vitae nunc elementum
-                                fermentum. Ut in nisl nec sem ultrices luctus. Integer euismod, nulla nec scelerisque
-                                consectetur, mi sapien tincidunt nunc, nec vestibulum odio sapien id nisi. Sed in
-                                sollicitudin mi. Donec nec odio vitae nunc elementum fermentum. Ut in nisl nec sem ultrices
-                                luctus. Integer euismod, nulla nec scelerisque consectetur, mi sapien tincidunt nunc, nec
-                            </Text>
-
-                        </View>
-
-                        <View className="w-full border my-5 border-secondary"></View>
-
-                        {/* other details */}
-                        <View>
-                            <View
-                                className="bg-secondary-light py-2 flex flex-row items-center justify-center mx-10 rounded-full"
-                            >
-                                <Text
-                                    className="text-[20px] mx-3 font-psemibold text-tertiary-light"
-                                >
-                                    OTHER DETAILS
-                                </Text>
-                            </View>
-                            {/* Material */}
-                            <View
-                                className="px-5 flex flex-row items-center justify-between mt-3"
-                            >
-                                <Text
-                                    className="text-[14px] text-primary-dark font-psemibold"
-                                >
-                                    Material
-                                </Text>
-                                <Text
-                                    className="text-[14px] text-tertiary-light font-psemibold"
-                                >
-                                    Cotton
-                                </Text>
-                            </View>
-                            {/* Finish */}
-                            <View
-                                className="px-5 flex flex-row items-center justify-between mt-1"
-                            >
-                                <Text
-                                    className="text-[14px] text-primary-dark font-psemibold"
-                                >
-                                    Finish
-                                </Text>
-                                <Text
-                                    className="text-[14px] text-tertiary-light font-psemibold"
-                                >
-                                    Matte
-                                </Text>
-                            </View>
-                            {/* Weight */}
-                            <View
-                                className="px-5 flex flex-row items-center justify-between mt-1"
-                            >
-                                <Text
-                                    className="text-[14px] text-primary-dark font-psemibold"
-                                >
-                                    Weight
-                                </Text>
-                                <Text
-                                    className="text-[14px] text-tertiary-light font-psemibold"
-                                >
-                                    200 Kg
-                                </Text>
-                            </View>
-                            {/* Dimensions */}
-                            <View
-                                className="px-5 flex flex-row items-center justify-between mt-1"
-                            >
-                                <Text
-                                    className="text-[14px] text-primary-dark font-psemibold"
-                                >
-                                    Dimensions (LxWxH in cm)
-                                </Text>
-                                <Text
-                                    className="text-[14px] text-tertiary-light font-psemibold"
-                                >
-                                    10 x 10 x 10
-                                </Text>
-                            </View>
-                            {/* Warranty */}
-                            <View
-                                className="px-5 flex flex-row items-center justify-between mt-1"
-                            >
-                                <Text
-                                    className="text-[14px] text-primary-dark font-psemibold"
-                                >
-                                    Warranty
-                                </Text>
-                                <Text
-                                    className="text-[14px] text-tertiary-light font-psemibold"
-                                >
-                                    1 Year
-                                </Text>
-                            </View>
-                            {/* Storage */}
-                            <View
-                                className="px-5 flex flex-row items-center justify-between mt-1"
-                            >
-                                <Text
-                                    className="text-[14px] text-primary-dark font-psemibold"
-                                >
-                                    Storage
-                                </Text>
-                                <Text
-                                    className="text-[14px] text-tertiary-light font-psemibold"
-                                >
-                                    Yes
-                                </Text>
-                            </View>
-                            {/* Style */}
-                            <View
-                                className="px-5 flex flex-row items-center justify-between mt-1"
-                            >
-                                <Text
-                                    className="text-[14px] text-primary-dark font-psemibold"
-                                >
-                                    Style
-                                </Text>
-                                <Text
-                                    className="text-[14px] text-tertiary-light font-psemibold"
-                                >
-                                    Modern
-                                </Text>
-                            </View>
-                        </View>
-
-                        <View className="w-full border my-5 border-secondary"></View>
-
-                        {/* Similar Products */}
-                        <View>
-                            <View
-                                className="bg-secondary-light py-2 flex flex-row items-center justify-center mx-10 rounded-full"
-                            >
-                                <Text
-                                    className="text-[20px] mx-3 font-psemibold text-tertiary-light"
-                                >
-                                    SIMILAR PRODUCTS
-                                </Text>
-                            </View>
-                            <View
-                                className="flex flex-row items-center justify-between mt-3"
-                            >
-                                <FlatList
-                                    data={products}
-                                    horizontal
-                                    keyExtractor={(item) => item.id.toString()}
-                                    showsHorizontalScrollIndicator={false}
-                                    showsVerticalScrollIndicator={false}
-                                    renderItem={({ item, index }) => (
-                                        <View
-                                            className={`mr-4 ${index === 0 ? 'ml-5' : ''}`}
+                                {/* Description */}
+                                <View>
+                                    <View
+                                        className="bg-secondary-light py-2 flex flex-row items-center justify-center mx-10 rounded-full"
+                                    >
+                                        <Text
+                                            className="text-[20px] mx-3 font-psemibold text-tertiary-light"
                                         >
-                                            <ProductVertical
-                                                index={index}
-                                                item={item}
+                                            DESCRIPTION
+                                        </Text>
+                                    </View>
+                                    <Text
+                                        className="text-[14px] mx-3 font-psemibold text-justify text-primary-dark mt-2 px-2"
+                                    >{product.description}</Text>
+
+                                </View>
+
+                                <View className="w-full border my-5 border-secondary"></View>
+
+                                {/* Images */}
+                                <View>
+                                    <View
+                                        className="bg-secondary-light py-2 flex flex-row items-center justify-center mx-10 mb-5 rounded-full"
+                                    >
+                                        <Text
+                                            className="text-[20px] mx-3 font-psemibold text-tertiary-light"
+                                        >
+                                            IMAGES
+                                        </Text>
+                                    </View>
+
+                                    <FlatList
+                                        data={product.images}
+                                        horizontal
+                                        keyExtractor={(item) => item.id.toString()}
+                                        showsHorizontalScrollIndicator={false}
+                                        showsVerticalScrollIndicator={false}
+                                        renderItem={({ item, index }) => (
+                                            <View
+                                                className={`w-[300px] flex-row  px-3 h-52 mr-4 ${index === 0 ? 'ml-5' : ''}`}
                                             >
-                                            </ProductVertical>
-                                        </View>
-                                    )}
-                                />
+                                                <Image
+                                                    source={{ uri: `http://wonderwoods.aps.org.in/${item.image}` }}
+                                                    className="w-full h-full bg-gray-200 rounded-lg"
+                                                    resizeMode='cover'
+                                                />
+                                            </View>
+                                        )}
+                                    />
+                                </View>
+
+                                <View className="w-full border my-5 border-secondary"></View>
+
+                                {/* other details */}
+                                <View>
+                                    <View
+                                        className="bg-secondary-light py-2 flex flex-row items-center justify-center mx-10 rounded-full"
+                                    >
+                                        <Text
+                                            className="text-[20px] mx-3 font-psemibold text-tertiary-light"
+                                        >
+                                            OTHER DETAILS
+                                        </Text>
+                                    </View>
+                                    {/* Color */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-3"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Color</Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        > {product.color?.name}</Text>
+                                    </View>
+                                    {/* Size */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-1"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Size</Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        > {product.size?.name}</Text>
+                                    </View>
+                                    {/* Material */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-1"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Material</Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        > {product.material}</Text>
+                                    </View>
+                                    {/* Finish */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-1"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Finish</Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        >{product.finish}</Text>
+                                    </View>
+                                    {/* Weight */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-1"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Weight</Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        > {product.weight} kg</Text>
+                                    </View>
+                                    {/* Dimensions */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-1"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Dimensions (LxWxH in cm)</Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        > {product.length} x {product.width} x {product.height}</Text>
+                                    </View>
+                                    {/* Warranty */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-1"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Warranty</Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        > {product.warranty} Months</Text>
+                                    </View>
+                                    {/* Storage */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-1"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Storage</Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        > {product.storage === 1 ? 'Yes' : 'No'}</Text>
+                                    </View>
+                                    {/* Style */}
+                                    <View
+                                        className="px-5 flex flex-row items-center justify-between mt-1"
+                                    >
+                                        <Text
+                                            className="text-[14px] text-primary-dark font-psemibold"
+                                        >Style
+                                        </Text>
+                                        <Text
+                                            className="text-[14px] text-tertiary-light font-psemibold"
+                                        > {product.style}</Text>
+                                    </View>
+                                </View>
+
+                                <View className="w-full border my-5 border-secondary"></View>
+
+                                {/* Similar Products */}
+                                <View>
+                                    <View
+                                        className="bg-secondary-light py-2 flex flex-row items-center justify-center mx-10 rounded-full"
+                                    >
+                                        <Text
+                                            className="text-[20px] mx-3 font-psemibold text-tertiary-light"
+                                        >
+                                            SIMILAR PRODUCTS
+                                        </Text>
+                                    </View>
+                                    <View
+                                        className="flex flex-row items-center justify-between mt-3"
+                                    >
+                                        <FlatList
+                                            data={similarProducts}
+                                            horizontal
+                                            keyExtractor={(item) => item.id.toString()}
+                                            showsHorizontalScrollIndicator={false}
+                                            showsVerticalScrollIndicator={false}
+                                            renderItem={({ item, index }) => (
+                                                <View
+                                                    className={`mr-4 ${index === 0 ? 'ml-5' : ''}`}
+                                                >
+                                                    <ProductVertical
+                                                        index={index}
+                                                        item={item}
+                                                    >
+                                                    </ProductVertical>
+                                                </View>
+                                            )}
+                                        />
+                                    </View>
+                                </View>
                             </View>
-                        </View>
-                    </View>
-                </ScrollView>
-            </SafeAreaView>
+                        </ScrollView>
+                    </SafeAreaView>
+                )}
 
             {/* CTA for wishlist and add to cart */}
             <View

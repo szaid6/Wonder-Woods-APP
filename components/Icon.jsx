@@ -4,13 +4,14 @@ import icons from '../constants/icons'
 import images from '../constants/images'
 
 const Icon = ({ item, index, selectableFrame }) => {
+
     return (
         <View className={`w-24 h-[110px] flex items-center mr-1 ${index === 0 ? 'ml-4' : ''}`}>
             <View className={`w-[76px] h-[76px] rounded-lg bg-white flex items-center justify-center ${selectableFrame ? 'border-2 border-tertiary-dark' : ''}`}>
                 <Image
-                    source={images.logo}
+                    source={{ uri: `http://wonderwoods.aps.org.in/${item.image}`}}
                     className="w-[70px] h-[70px] mt-1 rounded-lg mb-1 border-2"
-                    resizeMode='contain'
+                    resizeMode='cover'
                 />
             </View>
             <Text
@@ -20,7 +21,6 @@ const Icon = ({ item, index, selectableFrame }) => {
                 {item.name}
             </Text>
         </View>
-        
     )
 }
 

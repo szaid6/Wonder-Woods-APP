@@ -1,10 +1,11 @@
 import { View, Text, ScrollView, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '../../components/Header';
 import { router, useLocalSearchParams } from 'expo-router';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddressUpdate = () => {
 
@@ -27,6 +28,42 @@ const AddressUpdate = () => {
     landmark: data.landmark,
     type: data.type
   })
+
+  // save address to server
+  const updateAddress = () => {
+
+    fetch('http://wonderwoods.aps.org.in/api/address/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: data.id,
+        name: form.name,
+        phone: form.phone,
+        address1: form.address1,
+        address2: form.address2,
+        city: form.city,
+        state: form.state,
+        district: form.district,
+        pincode: form.pincode,
+        landmark: form.landmark,
+        type: form.type
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 200) {
+          console.log('Success:', data);
+          router.back();
+        } else {
+          console.log('Error:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
 
   return (
     <>
@@ -165,7 +202,7 @@ const AddressUpdate = () => {
           title="UPDATE ADDRESS"
           containerStyles="w-full bg-primary rounded-sm"
           textStyles="text-lg text-white"
-          handlePress={() => router.push('address')}
+          handlePress={updateAddress}
         />
       </View>
     </>
