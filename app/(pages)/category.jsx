@@ -38,6 +38,8 @@ const Category = () => {
         setProducts(data.data.category['subcategories'][0]['products']);
 
         handleSubCategoryChange(data.data.category['subcategories'][0]);
+
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -69,69 +71,85 @@ const Category = () => {
           searchBarEditable={false}
         />
       </View>
-      <SafeAreaView
-        className="w-full pb-5 flex-1 bg-white"
-      >
-        <View>
-          {/* Categories */}
-          <FlatList
-            data={subcatergories}
-            keyExtractor={(item) => item.$id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                onPress={handleSubCategoryChange.bind(this, item)}
-                activeOpacity={1}
-              >
-                <Icon
-                  item={item}
-                  index={index}
-                  selectableFrame={selectedSubCategory && selectedSubCategory.id === item.id}
-                />
-              </TouchableOpacity>
-            )}
-          />
-
-          {/* Products */}
-
-          <View>
-            {/* Products Header */}
-            <View
-              className="w-full flex bg-secondary-light justify-between items-center px-4 py-3 mt-3"
-            >
-              <Text
-                className="text-lg font-psemibold text-primary-dark"
-              >
-                {selectedSubCategory ? selectedSubCategory.name : 'All Products'}
-              </Text>
-              <View>
-                <Text
-                  className="text-sm font-psemibold text-primary-dark"
-                >
-                  {selectedSubCategoryProductsCount}
-                  <Text>
-                    {' '}Products
-                  </Text>
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Products */}
-          <View className="flex flex-row flex-wrap justify-between px-4">
-            {products.map(product => (
-              <ProductVertical
-                item={product}
-              />
-            ))}
-
-          </View>
-
+      {isLoading && (
+        <View
+          className="flex flex-1 items-center justify-center bg-white"
+        >
+          <Text
+            className="text-[20px] font-psemibold text-primary-dark"
+          >
+            Loading...
+          </Text>
         </View>
+      )}
 
-      </SafeAreaView>
+      {
+        !isLoading && (
+          <SafeAreaView
+            className="w-full pb-5 flex-1 bg-white"
+          >
+            <View>
+              {/* Categories */}
+              <FlatList
+                data={subcatergories}
+                keyExtractor={(item) => item.$id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item, index }) => (
+                  <TouchableOpacity
+                    onPress={handleSubCategoryChange.bind(this, item)}
+                    activeOpacity={1}
+                  >
+                    <Icon
+                      item={item}
+                      index={index}
+                      selectableFrame={selectedSubCategory && selectedSubCategory.id === item.id}
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+
+              {/* Products */}
+
+              <View>
+                {/* Products Header */}
+                <View
+                  className="w-full flex bg-secondary-light justify-between items-center px-4 py-3 mt-3"
+                >
+                  <Text
+                    className="text-lg font-psemibold text-primary-dark"
+                  >
+                    {selectedSubCategory ? selectedSubCategory.name : 'All Products'}
+                  </Text>
+                  <View>
+                    <Text
+                      className="text-sm font-psemibold text-primary-dark"
+                    >
+                      {selectedSubCategoryProductsCount}
+                      <Text>
+                        {' '}Products
+                      </Text>
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Products */}
+              <View className="flex flex-row flex-wrap justify-between px-4">
+                {products.map(product => (
+                  <ProductVertical
+                    item={product}
+                  />
+                ))}
+
+              </View>
+
+            </View>
+
+          </SafeAreaView>
+        )}
+
     </>
   )
 }
