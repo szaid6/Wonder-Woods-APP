@@ -94,8 +94,6 @@ const ProductVertical = ({ item }) => {
         }
     };
 
-
-
     const goToProductDetails = () => {
         console.log("Go To Product Details");
 

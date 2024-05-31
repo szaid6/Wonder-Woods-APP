@@ -39,6 +39,11 @@ const PageLayout = () => {
                         headerShown: false
                     }}
                 />
+                <Stack.Screen name="shopbyroom"
+                    options={{
+                        headerShown: false
+                    }}
+                />
                 <Stack.Screen name="profile-details"
                     options={{
                         headerShown: false
@@ -59,6 +64,7 @@ const PageLayout = () => {
                         headerShown: false
                     }}
                 />
+
             </Stack>
             <StatusBar style="auto" />
         </>

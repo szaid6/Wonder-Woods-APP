@@ -189,9 +189,18 @@ const Home = () => {
                     <View className={`${index === 0 ? 'pl-6' : 'pl-4'} ${index === rooms.length - 1 ? 'pr-6' : ''}`}>
                       {
                         item.map((cat) => (
-                          <ShopByRoom
-                            item={cat}
-                          />
+                          <TouchableOpacity
+                            activeOpacity={1}
+                            onPress={() => router.push({
+                              pathname: 'shopbyroom',
+                              params: {
+                                id: cat.id
+                              }
+                            })}>
+                            <ShopByRoom
+                              item={cat}
+                            />
+                          </TouchableOpacity>
                         ))
                       }
 

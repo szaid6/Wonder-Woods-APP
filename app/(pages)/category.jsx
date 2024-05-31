@@ -29,7 +29,7 @@ const Category = () => {
     })
       .then(response => response.json())
       .then(data => {
-
+        console.log('Success:', data);
         const categoryData = data.data.category;
         const subcategoriesData = categoryData.subcategories || [];
         const firstSubcategory = subcategoriesData.length > 0 ? subcategoriesData[0] : null;

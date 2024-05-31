@@ -1,6 +1,8 @@
-import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, ToastAndroid } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import CustomButton from './CustomButton'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { router } from 'expo-router'
 
 
 const QtyButton = ({ qty }) => {
@@ -51,7 +53,8 @@ const QtyButton = ({ qty }) => {
     )
 }
 
-const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, showAddToWishlist, showMoveToCart }) => {
+const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, handleDeleteWishlist, showAddToWishlist, showMoveToCart }) => {
+    
 
     const priceDifference = item.price - item.products.discountedPrice;
     const priceDifferenceText = priceDifference !== 0 ? (
@@ -66,12 +69,27 @@ const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, showAddTo
     const removeCartItem = (id) => {
         // Remove the cart item
         console.log('Remove cart item', id);
+
+        fetch(`http://wonderwoods.aps.org.in/api/cart/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: {
+                userId: user['id'],
+                productId: id,
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 
-    const removeWishlistItem = (id) => {
-        // Remove the wishlist item
-        console.log('Remove wishlist item', id);
-    }
+
 
     const moveToWishlist = (id) => {
         // Move the item to wishlist
@@ -172,7 +190,7 @@ const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, showAddTo
                     showDeleteWishlist && (
                         <CustomButton
                             title="Remove"
-                            handlePress={removeWishlistItem.bind(this, item.id)}
+                            handlePress={handleDeleteWishlist}
                             containerStyles="bg-secondary-light rounded-md"
                             textStyles="text-tertiary-light"
                         />

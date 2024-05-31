@@ -1,108 +1,129 @@
-import { View, Text, FlatList, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import EmptyPage from '../../components/EmptyPage'
-import images from '../../constants/images'
-import CartItem from '../../components/CartItem'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { View, Text, FlatList, TouchableOpacity, ToastAndroid, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import EmptyPage from '../../components/EmptyPage';
+import images from '../../constants/images';
+import CartItem from '../../components/CartItem';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
 const Wishlist = () => {
-
-  const [wishlist, setWishlist] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState({});
+  const [wishlist, setWishlist] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    AsyncStorage.getItem('user')
-      .then((user) => {
-        const userData = JSON.parse(user)
-        fetch('http://wonderwoods.aps.org.in/api/wishlist?userId=' + userData.id, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.status === 200) {
-              console.log('Success:', data);
-              setWishlist(data.data);
-              setIsLoading(false);
-            } else {
-              console.error('Error:', data);
-            }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      })
+    if (isFocused) {
+      fetchUserData();
+    }
   }, [isFocused]);
 
+  const fetchUserData = async () => {
+    try {
+      const user = await AsyncStorage.getItem('user');
+      const userData = JSON.parse(user);
+      setUser(userData);
+      fetchWishlist(userData.id);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setIsLoading(false);
+    }
+  };
+
+  const fetchWishlist = async (userId) => {
+    try {
+      const response = await fetch(`http://wonderwoods.aps.org.in/api/wishlist?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.status === 200) {
+        setWishlist(data.data);
+      } else {
+        console.error('Error:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching wishlist:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const openProductDetails = (productId) => {
-    // stringified object
-    console.log('====================================');
     console.log('Open Product Details', productId);
-    console.log('====================================');
-    // router.push('product-details', { id: item.product.id })
+    // router.push('product-details', { id: item.product.id });
+  };
+
+  const removeWishlistItem = async (id) => {
+    try {
+      const response = await fetch(`http://wonderwoods.aps.org.in/api/wishlist/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          productId: id,
+        }),
+      });
+      const data = await response.json();
+      if (data.status === 200 || data.status === 400) {
+        ToastAndroid.show(data.message, ToastAndroid.SHORT);
+        fetchWishlist(user.id);
+      } else {
+        console.error('Error:', data);
+      }
+    } catch (error) {
+      console.error('Error removing wishlist item:', error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View className="flex flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text className="text-[20px] font-psemibold text-primary-dark">Loading...</Text>
+      </View>
+    );
   }
 
   return (
-    <>
-      {isLoading && (
-        <View
-          className="flex flex-1 items-center justify-center bg-white"
-        >
-          <Text
-            className="text-[20px] font-psemibold text-primary-dark"
-          >
-            Loading...
-          </Text>
-        </View>
-      )}
-
-      {
-        !isLoading && (
-          <View
-            className="flex-1 px-2 bg-white"
-          >
-            <FlatList
-              data={wishlist}
-              keyExtractor={(item, index) => index.toString()}
-              ListEmptyComponent={() => (
-                <EmptyPage
-                  image={images.emptyWishlist}
-                  title="You got everything"
-                  subTitle="Browse Products"
-                  handlePress={() => router.push('home')}
-                />
-              )}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={openProductDetails.bind(this, item.products.id)}
-                  activeOpacity={1}
-                >
-                  { /* log the item */
-                    console.log('item', item)
-                  }
-                  <CartItem
-                    item={item}
-                    showQty={false}
-                    showDeleteCart={false}
-                    showDeleteWishlist={true}
-                    showAddToWishlist={false}
-                    showMoveToCart={true}
-                  />
-                </TouchableOpacity>
-              )}
-            >
-            </FlatList>
-
-          </View>
+    <View className="flex-1 px-2 bg-white">
+      <FlatList
+        data={wishlist}
+        keyExtractor={(item, index) => index.toString()}
+        ListEmptyComponent={() => (
+          <EmptyPage
+            image={images.emptyWishlist}
+            title="You got everything"
+            subTitle="Browse Products"
+            handlePress={() => router.push('home')}
+          />
         )}
-    </>
-  )
-}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => openProductDetails(item.products?.id)}
+            activeOpacity={1}
+          >
+            {item.products && (
+              <CartItem
+                item={item}
+                showQty={false}
+                showDeleteCart={false}
+                showDeleteWishlist={true}
+                handleDeleteWishlist={() => removeWishlistItem(item.products.id)}
+                showAddToWishlist={false}
+                showMoveToCart={true}
+              />
+            )}
+          </TouchableOpacity>
+        )}
+      />
+    </View>
+  );
+};
 
-export default Wishlist
+export default Wishlist;

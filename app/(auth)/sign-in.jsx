@@ -22,6 +22,7 @@ const SignIn = () => {
   const submit = () => {
     setIsSubmitting(true)
 
+    console.log('submitting form', form);
 
     // issue an alert if the form is not valid
     if (!form.phone || !form.password) {
