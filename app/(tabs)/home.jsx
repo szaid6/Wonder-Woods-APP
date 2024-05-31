@@ -1,17 +1,12 @@
-import { View, Text, FlatList, TextInput, TouchableOpacity, Image, TouchableWithoutFeedback, ScrollView } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
+import { View, Text, FlatList, TouchableOpacity, Image, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { router } from 'expo-router';
 import icons from '../../constants/icons'
 import images from '../../constants/images'
 import Icon from '../../components/Icon';
 import ProductVertical from '../../components/ProductVertical';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import BottomSheet from '@gorhom/bottom-sheet'
 import ShopByRoom from '../../components/ShopByRoom';
 import RecentlyViewed from '../../components/RecentlyViewed';
-import * as Animatable from 'react-native-animatable';
 import Banner from '../../components/Banner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
@@ -74,8 +69,6 @@ const Home = () => {
       return [];
     }
   };
-
-
 
   return (
     <>

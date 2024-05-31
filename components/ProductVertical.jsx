@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useMemo, useState } from 'react'
+import { Image, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
 import icons from '../constants/icons'
 import CustomButton from './CustomButton'
 import ImageButton from './ImageButton'
@@ -8,8 +8,65 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const ProductVertical = ({ item }) => {
 
+    const [user, setUser] = useState([]);
     const [isAddedToCart, setIsAddedToCart] = useState(false);
     const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
+
+    useEffect(() => {
+        AsyncStorage.getItem('user')
+            .then((user) => {
+                const userData = JSON.parse(user)
+                setUser(userData);
+
+                // Check if the product is already in the cart
+                fetch('http://wonderwoods.aps.org.in/api/cart?userId=' + userData.id, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 200) {
+                            const cartItems = data.data;
+                            const productInCart = cartItems.find(cartItem => cartItem.productId === item.id);
+                            if (productInCart) {
+                                setIsAddedToCart(true);
+                            }
+                        } else {
+                            console.error('Error:', data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+
+                // Check if the product is already in the wishlist
+                fetch('http://wonderwoods.aps.org.in/api/wishlist?userId=' + userData.id, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 200) {
+                            const wishlistItems = data.data;
+                            const productInWishlist = wishlistItems.find(wishlistItem => wishlistItem.productId === item.id);
+                            if (productInWishlist) {
+                                setIsAddedToWishlist(true);
+                            }
+                        } else {
+                            console.error('Error:', data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+
+            })
+    }, []);
+
 
     // Function to save a product to "recently visited" list
     const saveProductToRecentlyVisited = async (product) => {
@@ -52,25 +109,85 @@ const ProductVertical = ({ item }) => {
                 id: item.id
             }
         })
-
     }
 
     const addToCart = () => {
         console.log("Added To Cart");
-        if (isAddedToCart) {
-            setIsAddedToCart(false);
-        } else {
-            setIsAddedToCart(true);
-        }
+
+        fetch('http://wonderwoods.aps.org.in/api/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: user['id'],
+                productId: item.id,
+                price: item.discountedPrice,
+                qty: 1
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    setIsAddedToCart(true);
+                    // ToastAndroid.show(
+                    //     data.message,
+                    //     ToastAndroid.SHORT
+                    // );
+                    console.log('Success:', data);
+                } else if (data.status === 400) {
+                    setIsAddedToCart(false);
+                    // ToastAndroid.show(
+                    //     data.message,
+                    //     ToastAndroid.SHORT
+                    // );
+                }
+                else {
+                    console.error('Error:', data);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 
     const addToWishlist = () => {
         console.log("Added To Wishlist");
-        if (isAddedToWishlist) {
-            setIsAddedToWishlist(false);
-        } else {
-            setIsAddedToWishlist(true);
-        }
+
+        fetch('http://wonderwoods.aps.org.in/api/wishlist/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: user['id'],
+                productId: item.id,
+                price: item.discountedPrice
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    setIsAddedToWishlist(true);
+                    // ToastAndroid.show(
+                    //     data.message,
+                    //     ToastAndroid.SHORT
+                    // );
+                    console.log('Success:', data);
+                } else if (data.status === 400) {
+                    setIsAddedToWishlist(false);
+                    // ToastAndroid.show(
+                    //     data.message,
+                    //     ToastAndroid.SHORT
+                    // );
+                }
+                else {
+                    console.error('Error:', data);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 
     return (
@@ -205,8 +322,8 @@ const ProductVertical = ({ item }) => {
                             <CustomButton
                                 title={isAddedToCart ? "Added To Cart" : "Add To Cart"}
                                 handlePress={addToCart}
-                                containerStyles="w-[80%] rounded-lg bg-primary"
-                                textStyles="text-xs text-white font-psemibold"
+                                containerStyles={`w-[80%] rounded-lg ${isAddedToCart ? "bg-primary" : "bg-secondary-lighter"}`}
+                                textStyles={`text-xs font-psemibold ${isAddedToCart ? "text-white" : "text-primary"}`}
                             />
                             {/* Wishlist */}
                             <ImageButton

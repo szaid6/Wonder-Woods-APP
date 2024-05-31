@@ -1,10 +1,9 @@
-import { View, Text, FlatList, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 import React, { useEffect, useMemo, useState } from 'react'
 import Header from '../../components/Header'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams } from 'expo-router'
 import Icon from '../../components/Icon'
-import images from '../../constants/images'
 import ProductVertical from '../../components/ProductVertical'
 
 const Category = () => {
@@ -12,8 +11,6 @@ const Category = () => {
   // Get the item from the navigation
   const params = useLocalSearchParams();
 
-  // conver the stringified object to JSON
-  console.log("Category data : ", JSON.parse(params.id))
   const categoryId = JSON.parse(params.id)
 
   const [catergory, setCategory] = useState([])
@@ -32,13 +29,19 @@ const Category = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Success:', data);
-        setCategory(data.data.category);
-        setSubcategories(data.data.category['subcategories']);
-        setProducts(data.data.category['subcategories'][0]['products']);
 
-        handleSubCategoryChange(data.data.category['subcategories'][0]);
+        const categoryData = data.data.category;
+        const subcategoriesData = categoryData.subcategories || [];
+        const firstSubcategory = subcategoriesData.length > 0 ? subcategoriesData[0] : null;
+        const productsData = firstSubcategory ? firstSubcategory.products || [] : [];
 
+        setCategory(categoryData);
+        setSubcategories(subcategoriesData);
+        setProducts(productsData);
+
+        if (firstSubcategory) {
+          handleSubCategoryChange(firstSubcategory);
+        }
         setIsLoading(false);
       })
       .catch((error) => {
@@ -48,8 +51,6 @@ const Category = () => {
 
   const handleSubCategoryChange = (subcategory) => {
     console.log("Sub category changed")
-    // change the sub category title
-    console.log("Sub category : ", subcategory);
     setSelectedSubCategory(subcategory);
     setProducts(subcategory.products);
   }

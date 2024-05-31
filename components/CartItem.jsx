@@ -51,9 +51,9 @@ const QtyButton = ({ qty }) => {
     )
 }
 
-const CartItem = ({ item, showQty, showDelete, showAddToWishlist, showMoveToCart }) => {
+const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, showAddToWishlist, showMoveToCart }) => {
 
-    const priceDifference = item.price - item.product.price;
+    const priceDifference = item.price - item.products.discountedPrice;
     const priceDifferenceText = priceDifference !== 0 ? (
         <Text className="text-[12px] text-primary-dark font-psemibold">
             Price {priceDifference > 0 ? 'increased by' : 'reduced by'} {''}
@@ -66,6 +66,11 @@ const CartItem = ({ item, showQty, showDelete, showAddToWishlist, showMoveToCart
     const removeCartItem = (id) => {
         // Remove the cart item
         console.log('Remove cart item', id);
+    }
+
+    const removeWishlistItem = (id) => {
+        // Remove the wishlist item
+        console.log('Remove wishlist item', id);
     }
 
     const moveToWishlist = (id) => {
@@ -86,12 +91,12 @@ const CartItem = ({ item, showQty, showDelete, showAddToWishlist, showMoveToCart
                 className="flex flex-row items-center"
             >
                 <View
-                    className="w-[25%]"
+                    className="w-[25%] ml-2"
                 >
                     <Image
-                        source={item.product.image}
+                        source={{ uri: `http://wonderwoods.aps.org.in/${item.products.image}` }}
                         className="w-24 h-24 rounded-lg"
-                        resizeMode='contain'
+                        resizeMode='cover'
                     />
                 </View>
                 <View
@@ -99,8 +104,8 @@ const CartItem = ({ item, showQty, showDelete, showAddToWishlist, showMoveToCart
                 >
                     <Text
                         // numberOfLines={2}
-                        className="text-[16px] text-primary font-psemibold"
-                    > {item.product.title}  </Text>
+                        className="text-[16px] text-primary font-psemibold text-start"
+                    >{item.products.name}</Text>
                     {/* Product Pricing */}
                     <View
                         className="flex flex-row mt-2 h-8"
@@ -111,7 +116,7 @@ const CartItem = ({ item, showQty, showDelete, showAddToWishlist, showMoveToCart
                             <Text
                                 className="text-[12px] text-tertiary-light font-psemibold"
                             >₹</Text>
-                            {Number(item.product.price).toLocaleString('en-IN')}
+                            {Number(item.products.discountedPrice).toLocaleString('en-IN')}
                         </Text>
                         <View
                             className="flex flex-col justify-between ml-1"
@@ -122,12 +127,12 @@ const CartItem = ({ item, showQty, showDelete, showAddToWishlist, showMoveToCart
                                 <Text
                                     className="text-[10px] text-primary font-psemibold"
                                 >₹</Text>
-                                {Number(item.product.mrp).toLocaleString('en-IN')}
+                                {Number(item.products.mrp).toLocaleString('en-IN')}
                             </Text>
                             <Text
                                 className="text-[10px] h-4 text-primary font-psemibold"
                             >
-                                -{item.product.mrp > 0 ? Math.round(((item.product.mrp - item.product.price) / item.product.mrp) * 100) : 0}
+                                -{item.products.mrp > 0 ? Math.round(((item.products.mrp - item.products.discountedPrice) / item.products.mrp) * 100) : 0}
                                 <Text>%</Text>
                             </Text>
                         </View>
@@ -153,10 +158,21 @@ const CartItem = ({ item, showQty, showDelete, showAddToWishlist, showMoveToCart
                 }
 
                 {
-                    showDelete && (
+                    showDeleteCart && (
                         < CustomButton
                             title="Remove"
                             handlePress={removeCartItem.bind(this, item.id)}
+                            containerStyles="bg-secondary-light rounded-md"
+                            textStyles="text-tertiary-light"
+                        />
+                    )
+                }
+
+                {
+                    showDeleteWishlist && (
+                        <CustomButton
+                            title="Remove"
+                            handlePress={removeWishlistItem.bind(this, item.id)}
                             containerStyles="bg-secondary-light rounded-md"
                             textStyles="text-tertiary-light"
                         />

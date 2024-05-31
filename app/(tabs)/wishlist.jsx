@@ -1,37 +1,42 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import EmptyPage from '../../components/EmptyPage'
 import images from '../../constants/images'
 import CartItem from '../../components/CartItem'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useIsFocused } from '@react-navigation/native';
 
 const Wishlist = () => {
-  const wishlist = [{
-    id: 1,
-    productId: 1,
-    price: 10000,
-    product: {
-      id: 1,
-      image: images.logo,
-      title: 'Product 1 name will be here so that it can be displayed properly in the UI',
-      tag: 'New Arrival',
-      price: '9000',
-      mrp: '12000'
-    }
-  },
-  {
-    id: 2,
-    productId: 2,
-    price: 20000,
-    product: {
-      id: 2,
-      image: images.logo,
-      title: 'Product 2',
-      tag: 'New',
-      price: '22000',
-      mrp: '23000'
-    }
-  },
-  ]
+
+  const [wishlist, setWishlist] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    AsyncStorage.getItem('user')
+      .then((user) => {
+        const userData = JSON.parse(user)
+        fetch('http://wonderwoods.aps.org.in/api/wishlist?userId=' + userData.id, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 200) {
+              console.log('Success:', data);
+              setWishlist(data.data);
+              setIsLoading(false);
+            } else {
+              console.error('Error:', data);
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      })
+  }, [isFocused]);
 
   const openProductDetails = (productId) => {
     // stringified object
@@ -42,44 +47,61 @@ const Wishlist = () => {
   }
 
   return (
-    <View
-      className="flex-1 px-2 bg-white"
-    >
-      {wishlist.length == 0 && (
-        <EmptyPage
-          image={images.emptyWishlist}
-          title="You got everything"
-          subTitle="Browse Products"
-          handlePress={() => router.push('home')}
-        />
+    <>
+      {isLoading && (
+        <View
+          className="flex flex-1 items-center justify-center bg-white"
+        >
+          <Text
+            className="text-[20px] font-psemibold text-primary-dark"
+          >
+            Loading...
+          </Text>
+        </View>
       )}
 
-
-      <FlatList
-        data={wishlist}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={openProductDetails.bind(this, item.product.id)}
-            activeOpacity={1}
+      {
+        !isLoading && (
+          <View
+            className="flex-1 px-2 bg-white"
           >
-            { /* log the item */
-              console.log('item', item)
-            }
-            <CartItem
-              item={item}
-              showQty={false}
-              showDelete={true}
-              showAddToWishlist={false}
-              showMoveToCart={true}
-            />
-          </TouchableOpacity>
+            <FlatList
+              data={wishlist}
+              keyExtractor={(item, index) => index.toString()}
+              ListEmptyComponent={() => (
+                <EmptyPage
+                  image={images.emptyWishlist}
+                  title="You got everything"
+                  subTitle="Browse Products"
+                  handlePress={() => router.push('home')}
+                />
+              )}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={openProductDetails.bind(this, item.products.id)}
+                  activeOpacity={1}
+                >
+                  { /* log the item */
+                    console.log('item', item)
+                  }
+                  <CartItem
+                    item={item}
+                    showQty={false}
+                    showDeleteCart={false}
+                    showDeleteWishlist={true}
+                    showAddToWishlist={false}
+                    showMoveToCart={true}
+                  />
+                </TouchableOpacity>
+              )}
+            >
+            </FlatList>
+
+          </View>
         )}
-      >
-      </FlatList>
-    </View>
+    </>
   )
 }
 
