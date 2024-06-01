@@ -2,11 +2,11 @@ import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import icons from '../constants/icons'
 
-const CustomButton = ({ title, handlePress, containerStyles, textStyles, isLoading, leftIcon, rightIcon }) => {
+const CustomButton = ({ title, disabled, handlePress, containerStyles, textStyles, isLoading, leftIcon, rightIcon }) => {
     return (
         <TouchableOpacity
             onPress={handlePress}
-            disabled={isLoading}
+            disabled={isLoading || disabled}
             activeOpacity={0.8}
             className={`border-2 border-primary rounded-xl ${containerStyles} ${isLoading ? 'opacity-50' : ''}`} >
             {

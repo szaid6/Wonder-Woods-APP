@@ -1,8 +1,8 @@
-import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, ToastAndroid } from 'react-native'
+import { View, Text, Image, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CustomButton from './CustomButton'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { router } from 'expo-router'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const QtyButton = ({ qty }) => {
@@ -53,8 +53,51 @@ const QtyButton = ({ qty }) => {
     )
 }
 
-const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, handleDeleteWishlist, showAddToWishlist, showMoveToCart }) => {
+const CartItem = ({ item, showQty, showDeleteCart, handleDeleteCart, showDeleteWishlist, handleDeleteWishlist, showAddToWishlist, handleAddToWishlist, showMoveToCart, handleMoveToCart }) => {
     
+    const isFocused = useIsFocused();
+    const [user, setUser] = useState({});
+    const [isAddedToCart, setIsAddedToCart] = useState(false);
+
+    useEffect(() => {
+        fetchUserData();
+    }, [isFocused]);
+
+    const fetchUserData = async () => {
+        try {
+            const user = await AsyncStorage.getItem('user');
+            const userData = JSON.parse(user);
+            setUser(userData);
+            checkCart(item.products.id);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            setIsLoading(false);
+        }
+    };
+
+    const checkCart = async (productId) => {
+        try {
+            const response = await fetch('http://wonderwoods.aps.org.in/api/cart/check?userId=' + user.id + '&productId=' + productId, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            if (data.status === 200) {
+                console.log('Cart Data:', data);
+                setIsAddedToCart(data.isPresent);
+                return data.isPresent; 
+            } else {
+                console.error('Error:', data);
+                setIsAddedToCart(false);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error checking cart:', error);
+            return false;
+        }
+    };
 
     const priceDifference = item.price - item.products.discountedPrice;
     const priceDifferenceText = priceDifference !== 0 ? (
@@ -65,41 +108,6 @@ const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, handleDel
             </Text>
         </Text>
     ) : null;
-
-    const removeCartItem = (id) => {
-        // Remove the cart item
-        console.log('Remove cart item', id);
-
-        fetch(`http://wonderwoods.aps.org.in/api/cart/add`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: {
-                userId: user['id'],
-                productId: id,
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
-
-
-
-    const moveToWishlist = (id) => {
-        // Move the item to wishlist
-        console.log('Move to wishlist', id);
-    }
-
-    const moveToCart = (id) => {
-        // Move the item to cart
-        console.log('Move to cart', id);
-    }
 
     return (
         <View
@@ -179,7 +187,7 @@ const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, handleDel
                     showDeleteCart && (
                         < CustomButton
                             title="Remove"
-                            handlePress={removeCartItem.bind(this, item.id)}
+                            handlePress={handleDeleteCart}
                             containerStyles="bg-secondary-light rounded-md"
                             textStyles="text-tertiary-light"
                         />
@@ -201,7 +209,7 @@ const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, handleDel
                     showAddToWishlist && (
                         <CustomButton
                             title="Add to Wishlist"
-                            handlePress={moveToWishlist.bind(this, item.id)}
+                            handlePress={handleAddToWishlist}
                             containerStyles="bg-secondary-light rounded-md"
                             textStyles="text-tertiary-light"
                         />
@@ -211,10 +219,11 @@ const CartItem = ({ item, showQty, showDeleteCart, showDeleteWishlist, handleDel
                 {
                     showMoveToCart && (
                         <CustomButton
-                            title="Move to Cart"
-                            handlePress={moveToCart.bind(this, item.id)}
-                            containerStyles="bg-secondary-light rounded-md"
-                            textStyles="text-tertiary-light"
+                            title={isAddedToCart ? 'Added to Cart' : 'Move to Cart'}
+                            handlePress={handleMoveToCart}
+                            disabled={isAddedToCart}
+                            containerStyles={isAddedToCart ? "bg-primary rounded-md opacity-80" : "bg-secondary-light rounded-md"}
+                            textStyles={isAddedToCart ? "text-white" : "text-primary"}
                         />
                     )
                 }

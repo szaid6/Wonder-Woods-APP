@@ -12,7 +12,7 @@ const Wishlist = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
 
-  useEffect(() => {
+  useEffect(() => { 
     if (isFocused) {
       fetchUserData();
     }
@@ -56,7 +56,32 @@ const Wishlist = () => {
     // router.push('product-details', { id: item.product.id });
   };
 
-  const removeWishlistItem = async (id) => {
+  const toggleCart = async (id) => {
+    try {
+      const response = await fetch(`http://wonderwoods.aps.org.in/api/cart/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          productId: id,
+        }),
+      });
+      const data = await response.json();
+      if (data.status === 200 || data.status === 400) {
+        toggleWishlist(id);
+        ToastAndroid.show(data.message, ToastAndroid.SHORT);
+        fetchWishlist(user.id);
+      } else {
+        console.error('Error:', data);
+      }
+    } catch (error) {
+      console.error('Error removing cart item:', error);
+    }
+  };
+
+  const toggleWishlist = async (id) => {
     try {
       const response = await fetch(`http://wonderwoods.aps.org.in/api/wishlist/add`, {
         method: 'POST',
@@ -113,10 +138,13 @@ const Wishlist = () => {
                 item={item}
                 showQty={false}
                 showDeleteCart={false}
+                handleDeleteCart={() => toggleCart(item.products.id)}
                 showDeleteWishlist={true}
-                handleDeleteWishlist={() => removeWishlistItem(item.products.id)}
+                handleDeleteWishlist={() => toggleWishlist(item.products.id)}
                 showAddToWishlist={false}
+                handleAddToWishlist={() => toggleWishlist(item.products.id)}
                 showMoveToCart={true}
+                handleMoveToCart={() => toggleCart(item.products.id)}
               />
             )}
           </TouchableOpacity>
