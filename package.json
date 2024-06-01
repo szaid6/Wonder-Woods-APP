@@ -12,9 +12,11 @@
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.1",
     "@react-native-async-storage/async-storage": "1.23.1",
+    "axios": "^1.7.2",
     "expo": "~51.0.2",
     "expo-constants": "~16.0.1",
     "expo-dev-client": "^4.0.13",
+    "expo-file-system": "~17.0.1",
     "expo-image-picker": "~15.0.5",
     "expo-linking": "~6.3.1",
     "expo-router": "~3.5.11",

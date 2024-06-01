@@ -1,35 +1,91 @@
-import { View, Text, SafeAreaView, ScrollView, Image, TouchableWithoutFeedback } from 'react-native'
-import React, { useState } from 'react'
-import FormField from '../../components/FormField'
-import CustomButton from '../../components/CustomButton'
-import Header from '../../components/Header'
-import images from '../../constants/images'
-// file picker
+import { View, Text, SafeAreaView, ScrollView, Image, TouchableWithoutFeedback, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import FormField from '../../components/FormField';
+import CustomButton from '../../components/CustomButton';
+import Header from '../../components/Header';
+import images from '../../constants/images';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router'
+import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system';
 
 const ProfileDetails = () => {
     const [form, setForm] = useState({
         image: null,
-        name: 'Sayed Zaid',
-        phone: '8433885667',
-        email: 'szaid444666@gmail.com',
-    })
-    const [isSubmitting, setIsSubmitting] = useState(false)
+        name: null,
+        phone: null,
+        email: null
+    });
 
-    const updateProfile = () => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [user, setUser] = useState(null);
+    useEffect(() => {
+        AsyncStorage.getItem('user')
+            .then((user) => {
+                const userData = JSON.parse(user);
+                console.log('userData', userData);
+                setUser(userData);
+
+                setForm({
+                    ...form,
+                    image: 'http://wonderwoods.aps.org.in/' + userData.profileImage,
+                    name: userData.name,
+                    phone: userData.phone,
+                    email: userData.email
+                });
+            });
+    }, []);
+
+    const updateProfile = async () => {
         console.log('updating profile');
-
         setIsSubmitting(true);
-        setTimeout(() => {
+
+        try {
+            const formData = new FormData();
+            if (form.image) {
+                const fileInfo = await FileSystem.getInfoAsync(form.image);
+                const fileUriParts = form.image.split('/');
+                const fileName = fileUriParts[fileUriParts.length - 1];
+
+                formData.append('image', {
+                    uri: form.image,
+                    name: fileName,
+                    type: 'image/jpeg'
+                });
+            }
+
+            formData.append('userId', user.id);
+            formData.append('name', form.name);
+            formData.append('phone', form.phone);
+            formData.append('email', form.email);
+
+            console.log('formData', formData);
+
+            const response = await fetch('http://wonderwoods.aps.org.in/api/profile/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                Alert.alert('Success', 'Profile updated successfully');
+                console.log('Profile updated successfully', data.data.user);
+                // Save updated user data to AsyncStorage
+                await AsyncStorage.setItem('user', JSON.stringify(data.data.user));
+            } else {
+                console.log('Failed to update profile', data);
+                Alert.alert('Error', data.message || 'Failed to update profile');
+            }
+        } catch (error) {
+            console.log('Error updating profile', error);
+            Alert.alert('Error', 'An error occurred while updating profile');
+        } finally {
             setIsSubmitting(false);
-
-            // go back to the previous screen
-            router.back();
-        }, 2000);
-    }
-
-    const { image, setImage } = useState(null);
+        }
+    };
 
     const handleFilePicker = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -38,28 +94,18 @@ const ProfileDetails = () => {
             return;
         }
 
-        // // To open the file manager
-        // const result = await ImagePicker.launchImageLibraryAsync({
-        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        //     allowsEditing: true,
-        //     aspect: [1, 1],
-        //     quality: 1,
-        //     base64: true,
-        // });
-
-        // To open the camera
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
-            base64: true,
+            base64: true
         });
 
         if (!result.canceled) {
-            setForm({ ...form, image: result['assets'][0]['uri'] });
+            setForm({ ...form, image: result.assets[0].uri });
         }
-    }
+    };
 
     return (
         <>
@@ -73,16 +119,10 @@ const ProfileDetails = () => {
                     searchBarEditable={false}
                 />
             </View>
-            <SafeAreaView
-                className="w-full flex-1 bg-white "
-            >
-                <ScrollView
-                    className=""
-                >
+            <SafeAreaView className="w-full flex-1 bg-white ">
+                <ScrollView className="">
                     <View className="flex items-center px-5 justify-center w-full min-h-[90vh]">
-                        <TouchableWithoutFeedback
-                            onPress={handleFilePicker}
-                        >
+                        <TouchableWithoutFeedback onPress={handleFilePicker}>
                             <Image
                                 source={form.image ? { uri: form.image } : images.blank}
                                 className="w-36 h-36 mb-[50px] rounded-md"
@@ -93,7 +133,6 @@ const ProfileDetails = () => {
                             <View className="flex items-center w-full py-4 bg-secondary-lighter">
                                 <Text className="text-3xl mb-10 text-tertiary font-psemibold">Update Profile</Text>
 
-                                {/* Name field */}
                                 <FormField
                                     label=""
                                     placeholder="Enter your name"
@@ -104,19 +143,17 @@ const ProfileDetails = () => {
                                     externalIcon="userOutline"
                                 />
 
-                                {/* Phone field */}
                                 <FormField
                                     label=""
                                     placeholder="Enter your phone number"
                                     type="tel"
-                                    value={form.email}
-                                    handleChangeText={(value) => setForm({ ...form, email: value })}
+                                    value={form.phone}
+                                    handleChangeText={(value) => setForm({ ...form, phone: value })}
                                     otherStyles="mb-5 w-80"
                                     keyboardType="phone-pad"
                                     externalIcon="phone"
                                 />
 
-                                {/* Email field */}
                                 <FormField
                                     label=""
                                     placeholder="Enter your email"
@@ -127,32 +164,20 @@ const ProfileDetails = () => {
                                     externalIcon="mail"
                                 />
 
-                                {/* Login Button */}
                                 <CustomButton
                                     title="UPDATE"
                                     containerStyles="w-3/4 mt-8 mb-5"
                                     textStyles="text-lg text-tertiary-light"
                                     handlePress={updateProfile}
                                     isLoading={isSubmitting}
-                                >
-                                </CustomButton>
+                                />
                             </View>
                         </View>
                     </View>
                 </ScrollView>
             </SafeAreaView>
-            {/* <View
-                className="fixed bottom-0"
-            >
-                <CustomButton
-                    title="UPDATE PROFILE"
-                    containerStyles="w-full bg-primary rounded-sm"
-                    textStyles="text-lg text-white"
-                    handlePress={() => router.push('address')}
-                />
-            </View> */}
         </>
-    )
+    );
 }
 
-export default ProfileDetails
+export default ProfileDetails;

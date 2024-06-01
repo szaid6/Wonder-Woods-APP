@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ToastAndroid, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import EmptyPage from '../../components/EmptyPage';
 import CartItem from '../../components/CartItem';
@@ -25,6 +25,7 @@ const Cart = () => {
     try {
       const user = await AsyncStorage.getItem('user');
       const userData = JSON.parse(user);
+      console.log('userData in cart', userData.id);
       setUser(userData);
       fetchCart(userData.id);
     } catch (error) {
