@@ -5,21 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
 
-const QtyButton = ({ qty }) => {
+const QtyButton = ({ qty, handleIncrement, handleDecrement }) => {
 
     const [quantity, setQuantity] = useState(qty)
 
-    const handleDecrement = () => {
-        // Decrement the quantity
-        if (quantity > 1) {
-            setQuantity(quantity - 1)
-        }
-    }
-
-    const handleIncrement = () => {
-        // Increment the quantity
-        setQuantity(quantity + 1)
-    }
     return (
         <View
             className="flex flex-row items-center"
@@ -53,11 +42,12 @@ const QtyButton = ({ qty }) => {
     )
 }
 
-const CartItem = ({ item, showQty, showDeleteCart, handleDeleteCart, showDeleteWishlist, handleDeleteWishlist, showAddToWishlist, handleAddToWishlist, showMoveToCart, handleMoveToCart }) => {
-    
+const CartItem = ({ item, showQty, handlePlusCount, handleMinusCount, showDeleteCart, handleDeleteCart, showDeleteWishlist, handleDeleteWishlist, showAddToWishlist, handleAddToWishlist, showMoveToCart, handleMoveToCart }) => {
+
     const isFocused = useIsFocused();
     const [user, setUser] = useState({});
     const [isAddedToCart, setIsAddedToCart] = useState(false);
+    const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
 
     useEffect(() => {
         fetchUserData();
@@ -69,6 +59,7 @@ const CartItem = ({ item, showQty, showDeleteCart, handleDeleteCart, showDeleteW
             const userData = JSON.parse(user);
             setUser(userData);
             checkCart(item.products.id);
+            checkWishlist(item.products.id);
         } catch (error) {
             console.error('Error fetching user data:', error);
             setIsLoading(false);
@@ -87,7 +78,7 @@ const CartItem = ({ item, showQty, showDeleteCart, handleDeleteCart, showDeleteW
             if (data.status === 200) {
                 console.log('Cart Data:', data);
                 setIsAddedToCart(data.isPresent);
-                return data.isPresent; 
+                return data.isPresent;
             } else {
                 console.error('Error:', data);
                 setIsAddedToCart(false);
@@ -95,6 +86,30 @@ const CartItem = ({ item, showQty, showDeleteCart, handleDeleteCart, showDeleteW
             }
         } catch (error) {
             console.error('Error checking cart:', error);
+            return false;
+        }
+    };
+
+    const checkWishlist = async (productId) => {
+        try {
+            const response = await fetch('http://wonderwoods.aps.org.in/api/wishlist/check?userId=' + user.id + '&productId=' + productId, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            if (data.status === 200) {
+                console.log('Wishlist Data:', data);
+                setIsAddedToWishlist(data.isPresent);
+                return data.isPresent;
+            } else {
+                console.error('Error:', data);
+                setIsAddedToWishlist(false);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error checking wishlist:', error);
             return false;
         }
     };
@@ -179,6 +194,8 @@ const CartItem = ({ item, showQty, showDeleteCart, handleDeleteCart, showDeleteW
                     showQty && (
                         <QtyButton
                             qty={item.qty}
+                            handleIncrement={handlePlusCount}
+                            handleDecrement={handleMinusCount}
                         />
                     )
                 }
@@ -208,10 +225,11 @@ const CartItem = ({ item, showQty, showDeleteCart, handleDeleteCart, showDeleteW
                 {
                     showAddToWishlist && (
                         <CustomButton
-                            title="Add to Wishlist"
+                            title={isAddedToWishlist ? 'Added to Wishlist' : 'Add to Wishlist'}
                             handlePress={handleAddToWishlist}
-                            containerStyles="bg-secondary-light rounded-md"
-                            textStyles="text-tertiary-light"
+                            disabled={isAddedToWishlist}
+                            containerStyles={isAddedToWishlist ? "bg-primary rounded-md opacity-80" : "bg-secondary-light rounded-md"}
+                            textStyles={isAddedToWishlist ? "text-white" : "text-primary"}
                         />
                     )
                 }
