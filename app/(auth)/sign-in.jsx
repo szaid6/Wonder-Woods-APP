@@ -43,7 +43,7 @@ const SignIn = () => {
       password: form.password
     }
 
-    fetch('http://wonderwoods.aps.org.in/api/login', {
+    fetch('https://wonderwoods.aps.org.in/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -54,29 +54,34 @@ const SignIn = () => {
       .then(data => {
         console.log('Success:', data)
 
-        if (data.status !== 200) {
-          setIsSubmitting(false)
+        if (data.status === 200) {
+          setIsAuthenticated(true)
           ToastAndroid.show(
             data.message,
-            ToastAndroid.LONG
+            ToastAndroid.SHORT
           )
+
+          // save the token in the async storage
+          AsyncStorage.setItem('token', JSON.stringify(data.token))
+          AsyncStorage.setItem('user', JSON.stringify(data.user))
+
+          router.push('/home')
           return
         }
 
-        setIsAuthenticated(true)
+        setIsSubmitting(false)
         ToastAndroid.show(
           data.message,
-          ToastAndroid.SHORT
+          ToastAndroid.LONG
         )
 
-        // save the token in the async storage
-        AsyncStorage.setItem('token', JSON.stringify(data.token))
-        AsyncStorage.setItem('user', JSON.stringify(data.user))
-
-        router.push('/home')
       })
       .catch((error) => {
         console.error('Error:', error)
+        ToastAndroid.show(
+          'An error occurred. Please try again.',
+          ToastAndroid.LONG
+        )
         setIsSubmitting(false)
       })
 

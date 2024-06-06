@@ -22,7 +22,7 @@ const Address = () => {
             .then((user) => {
                 const userData = JSON.parse(user)
                 setUser(userData)
-                fetch('http://wonderwoods.aps.org.in/api/address?userId=' + userData.id, {
+                fetch('https://wonderwoods.aps.org.in/api/address?userId=' + userData.id, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -42,7 +42,7 @@ const Address = () => {
 
     const changeDefaultAddress = (addressId) => {
 
-        fetch('http://wonderwoods.aps.org.in/api/address/default', {
+        fetch('https://wonderwoods.aps.org.in/api/address/default', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -19,7 +19,7 @@ const ShopByRoom = () => {
 
   // Get the subcategories and products
   useEffect(() => {
-    fetch('http://wonderwoods.aps.org.in/api/shopbyroom/' + roomId, {
+    fetch('https://wonderwoods.aps.org.in/api/shopbyroom/' + roomId, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

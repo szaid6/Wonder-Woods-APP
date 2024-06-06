@@ -11,6 +11,7 @@ const GlobalProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        console.log('checking token');
         AsyncStorage.getItem('token')
             .then((token) => {
                 if (token) {

@@ -30,7 +30,7 @@ const BannerItem = ({ activeIndex, item, index }) => {
             duration={1000}
         >
             <ImageBackground
-                source={{ uri: `http://wonderwoods.aps.org.in/${item.image}` }}
+                source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }}
                 className="w-64 h-44 bg-black-dark "
                 resizeMode='cover'
             />

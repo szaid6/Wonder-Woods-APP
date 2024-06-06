@@ -21,7 +21,7 @@ const Category = () => {
 
   // Get the subcategories and products
   useEffect(() => {
-    fetch('http://wonderwoods.aps.org.in/api/category/' + categoryId, {
+    fetch('https://wonderwoods.aps.org.in/api/category/' + categoryId, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

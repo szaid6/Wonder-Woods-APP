@@ -36,7 +36,7 @@ const Cart = () => {
 
   const fetchCart = async (userId) => {
     try {
-      const response = await fetch(`http://wonderwoods.aps.org.in/api/cart?userId=${userId}`, {
+      const response = await fetch(`https://wonderwoods.aps.org.in/api/cart?userId=${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ const Cart = () => {
   const updateCartInBackend = async (userId, productId, qty) => {
     console.log('Update Cart in Backend', userId, productId, qty);
     try {
-      const response = await fetch(`http://wonderwoods.aps.org.in/api/cart/update`, {
+      const response = await fetch(`https://wonderwoods.aps.org.in/api/cart/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ const Cart = () => {
 
   const toggleCart = async (id) => {
     try {
-      const response = await fetch(`http://wonderwoods.aps.org.in/api/cart/add`, {
+      const response = await fetch(`https://wonderwoods.aps.org.in/api/cart/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ const Cart = () => {
 
   const toggleWishlist = async (id) => {
     try {
-      const response = await fetch(`http://wonderwoods.aps.org.in/api/wishlist/add`, {
+      const response = await fetch(`https://wonderwoods.aps.org.in/api/wishlist/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

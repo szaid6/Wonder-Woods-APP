@@ -28,7 +28,7 @@ const ProfileDetails = () => {
 
                 setForm({
                     ...form,
-                    image: 'http://wonderwoods.aps.org.in/' + userData.profileImage,
+                    image: 'https://wonderwoods.aps.org.in/' + userData.profileImage,
                     name: userData.name,
                     phone: userData.phone,
                     email: userData.email
@@ -61,7 +61,7 @@ const ProfileDetails = () => {
 
             console.log('formData', formData);
 
-            const response = await fetch('http://wonderwoods.aps.org.in/api/profile/update', {
+            const response = await fetch('https://wonderwoods.aps.org.in/api/profile/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data'

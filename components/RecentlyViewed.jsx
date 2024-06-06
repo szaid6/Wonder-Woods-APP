@@ -58,7 +58,7 @@ const RecentlyViewed = ({ item }) => {
                     className="w-[180px] h-[180px] mb-3 rounded-lg bg-gray-200"
                 >
                     <Image
-                        source={{ uri: `http://wonderwoods.aps.org.in/${item.image}` }}
+                        source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }}
                         className="w-full h-full rounded-lg opacity-80"
                         resizeMode='cover'
                     />

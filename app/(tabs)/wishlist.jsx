@@ -32,7 +32,7 @@ const Wishlist = () => {
 
   const fetchWishlist = async (userId) => {
     try {
-      const response = await fetch(`http://wonderwoods.aps.org.in/api/wishlist?userId=${userId}`, {
+      const response = await fetch(`https://wonderwoods.aps.org.in/api/wishlist?userId=${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const Wishlist = () => {
 
   const toggleCart = async (id) => {
     try {
-      const response = await fetch(`http://wonderwoods.aps.org.in/api/cart/add`, {
+      const response = await fetch(`https://wonderwoods.aps.org.in/api/cart/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ const Wishlist = () => {
 
   const toggleWishlist = async (id) => {
     try {
-      const response = await fetch(`http://wonderwoods.aps.org.in/api/wishlist/add`, {
+      const response = await fetch(`https://wonderwoods.aps.org.in/api/wishlist/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

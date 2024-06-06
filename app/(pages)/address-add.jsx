@@ -35,7 +35,7 @@ const AddressAdd = () => {
   // save address to server
   const saveAddress = () => {
 
-    fetch('http://wonderwoods.aps.org.in/api/address/add', {
+    fetch('https://wonderwoods.aps.org.in/api/address/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

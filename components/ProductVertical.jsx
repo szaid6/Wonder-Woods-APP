@@ -34,7 +34,7 @@ const ProductVertical = ({ item }) => {
 
     const checkProductStatus = async (userId, productId) => {
         try {
-            const cartResponse = await fetch(`http://wonderwoods.aps.org.in/api/cart/check?userId=${userId}&productId=${productId}`, {
+            const cartResponse = await fetch(`https://wonderwoods.aps.org.in/api/cart/check?userId=${userId}&productId=${productId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ const ProductVertical = ({ item }) => {
             const cartData = await cartResponse.json();
             setIsAddedToCart(cartData.status === 200 && cartData.isPresent);
 
-            const wishlistResponse = await fetch(`http://wonderwoods.aps.org.in/api/wishlist/check?userId=${userId}&productId=${productId}`, {
+            const wishlistResponse = await fetch(`https://wonderwoods.aps.org.in/api/wishlist/check?userId=${userId}&productId=${productId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ const ProductVertical = ({ item }) => {
 
     const handleAddToCart = async () => {
         try {
-            const response = await fetch('http://wonderwoods.aps.org.in/api/cart/add', {
+            const response = await fetch('https://wonderwoods.aps.org.in/api/cart/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -110,7 +110,7 @@ const ProductVertical = ({ item }) => {
 
     const handleAddToWishlist = async () => {
         try {
-            const response = await fetch('http://wonderwoods.aps.org.in/api/wishlist/add', {
+            const response = await fetch('https://wonderwoods.aps.org.in/api/wishlist/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -138,7 +138,7 @@ const ProductVertical = ({ item }) => {
             <View>
                 <TouchableOpacity onPress={goToProductDetails} activeOpacity={1}>
                     <View className="w-[180px] h-[180px] rounded-lg bg-gray-200">
-                        <Image source={{ uri: `http://wonderwoods.aps.org.in/${item.image}` }} className="w-full h-full rounded-lg" resizeMode='cover' />
+                        <Image source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }} className="w-full h-full rounded-lg" resizeMode='cover' />
                         {item.tag && (
                             <View className="h-5 absolute top-3 left-2 bg-secondary-lighter flex rounded-md items-center justify-center">
                                 <Text className="text-xs px-2 text-primary font-psemibold">{item.tag}</Text>

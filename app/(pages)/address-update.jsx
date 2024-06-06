@@ -32,7 +32,7 @@ const AddressUpdate = () => {
   // save address to server
   const updateAddress = () => {
 
-    fetch('http://wonderwoods.aps.org.in/api/address/update', {
+    fetch('https://wonderwoods.aps.org.in/api/address/update', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

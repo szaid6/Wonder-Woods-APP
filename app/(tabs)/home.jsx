@@ -1,6 +1,6 @@
 import { View, Text, FlatList, TouchableOpacity, Image, TouchableWithoutFeedback, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import icons from '../../constants/icons'
 import images from '../../constants/images'
 import Icon from '../../components/Icon';
@@ -10,6 +10,8 @@ import RecentlyViewed from '../../components/RecentlyViewed';
 import Banner from '../../components/Banner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import { useGlobalContext } from '../../context/GlobalProvider';
+
 
 const Home = () => {
   const [defaultAddress, setDefaultAddress] = useState(null)
@@ -29,7 +31,7 @@ const Home = () => {
         const userData = JSON.parse(user)
         console.log('userData', userData);
 
-        fetch('http://wonderwoods.aps.org.in/api/welcome?userId=' + userData.id, {
+        fetch('https://wonderwoods.aps.org.in/api/welcome?userId=' + userData.id, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -70,6 +72,8 @@ const Home = () => {
     }
   };
 
+  const { isAuthenticated } = useGlobalContext();
+  if (!isAuthenticated) return <Redirect href="/sign-in" />
   return (
     <>
       {isLoading && (

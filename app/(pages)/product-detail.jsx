@@ -23,7 +23,7 @@ const ProductDetail = () => {
 
     useEffect(() => {
         // fetch the product details from the API
-        fetch(`http://wonderwoods.aps.org.in/api/product/${productId}`, {
+        fetch(`https://wonderwoods.aps.org.in/api/product/${productId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ const ProductDetail = () => {
                             >
                                 <View className="w-full flex-row  px-3 h-72 bg-white">
                                     <Image
-                                        source={{ uri: `http://wonderwoods.aps.org.in/${product.image}` }}
+                                        source={{ uri: `https://wonderwoods.aps.org.in/${product.image}` }}
                                         className="w-full h-full bg-gray-200 rounded-lg"
                                         resizeMode='cover'
                                     />
@@ -270,7 +270,7 @@ const ProductDetail = () => {
                                                 className={`w-[300px] flex-row  px-3 h-52 mr-4 ${index === 0 ? 'ml-5' : ''}`}
                                             >
                                                 <Image
-                                                    source={{ uri: `http://wonderwoods.aps.org.in/${item.image}` }}
+                                                    source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }}
                                                     className="w-full h-full bg-gray-200 rounded-lg"
                                                     resizeMode='cover'
                                                 />

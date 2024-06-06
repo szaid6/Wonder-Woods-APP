@@ -68,7 +68,7 @@ const CartItem = ({ item, showQty, handlePlusCount, handleMinusCount, showDelete
 
     const checkCart = async (productId) => {
         try {
-            const response = await fetch('http://wonderwoods.aps.org.in/api/cart/check?userId=' + user.id + '&productId=' + productId, {
+            const response = await fetch('https://wonderwoods.aps.org.in/api/cart/check?userId=' + user.id + '&productId=' + productId, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const CartItem = ({ item, showQty, handlePlusCount, handleMinusCount, showDelete
 
     const checkWishlist = async (productId) => {
         try {
-            const response = await fetch('http://wonderwoods.aps.org.in/api/wishlist/check?userId=' + user.id + '&productId=' + productId, {
+            const response = await fetch('https://wonderwoods.aps.org.in/api/wishlist/check?userId=' + user.id + '&productId=' + productId, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const CartItem = ({ item, showQty, handlePlusCount, handleMinusCount, showDelete
                     className="w-[25%] ml-2"
                 >
                     <Image
-                        source={{ uri: `http://wonderwoods.aps.org.in/${item.products.image}` }}
+                        source={{ uri: `https://wonderwoods.aps.org.in/${item.products.image}` }}
                         className="w-24 h-24 rounded-lg"
                         resizeMode='cover'
                     />

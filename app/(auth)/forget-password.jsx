@@ -41,7 +41,7 @@ const ForgetPassword = () => {
         }
 
         // send the form data to the server
-        fetch('http://wonderwoods.aps.org.in/api/forget-password', {
+        fetch('https://wonderwoods.aps.org.in/api/forget-password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

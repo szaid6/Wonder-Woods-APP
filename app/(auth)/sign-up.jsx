@@ -48,7 +48,7 @@ const SignUp = () => {
       password: form.password
     }
 
-    fetch('http://wonderwoods.aps.org.in/api/register', {
+    fetch('https://wonderwoods.aps.org.in/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

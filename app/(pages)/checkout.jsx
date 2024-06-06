@@ -1,46 +1,166 @@
-import { View, Text, SafeAreaView, ScrollView, Image, FlatList, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, SafeAreaView, ScrollView, Image, FlatList, TouchableOpacity, TouchableWithoutFeedback, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router';
 import Header from '../../components/Header';
 import CustomButton from '../../components/CustomButton';
-import images from '../../constants/images';
-import EmptyPage from '../../components/EmptyPage';
-import CartItem from '../../components/CartItem';
+import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import RazorpayCheckout from 'react-native-razorpay';
 
 const Checkout = () => {
 
     const [cart, setCart] = useState([])
-
-    const searchParams = useLocalSearchParams()
-    console.log('====================================');
-    console.log('SearchParams', searchParams);
-    console.log('====================================');
+    const [cartMRPTotal, setMRPTotal] = useState(0)
+    const [cartDelivery, setCartDelivery] = useState(0)
+    const [cartTotal, setCartTotal] = useState(0)
+    const [cartDiscount, setCartDiscount] = useState(0)
+    const [cartGrandTotal, setCartGrandTotal] = useState(0)
+    const [cartSaved, setCartSaved] = useState(0)
+    const [cartDeliveryAddress, setCartDeliveryAddress] = useState(null)
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState(null)
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        if (searchParams.cart) {
-            setCart(searchParams.cart)
-        }
-        console.log('====================================');
-        console.log('Cart', cart);
-        console.log('====================================');
-    }, [searchParams])
+        AsyncStorage.getItem('user')
+            .then((user) => {
+                const userData = JSON.parse(user)
+                console.log('userData', userData);
+                fetchCart(userData.id);
+                setUser(userData);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, []);
 
-    confirmOrder = () => {
-        console.log('====================================');
+    useEffect(() => {
+        if (isFocused && user) {
+            console.log('user', user);
+            fetchDefaultAddress(user['id']);
+        }
+    }, [isFocused, user]);
+
+    const fetchCart = async (userId) => {
+        try {
+            fetch(`https://wonderwoods.aps.org.in/api/cart?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        setCart(data.data);
+
+                        // Calculate mrptotal
+                        const mrptotal = data.data.reduce((acc, item) => acc + (item.qty * item.products.mrp), 0);
+                        setMRPTotal(mrptotal);
+
+                        // Calculate delivery
+                        const delivery = data.data.reduce((acc, item) => acc + (item.qty * item.products.deliveryCharge), 0);
+                        setCartDelivery(delivery);
+
+                        // Calculate total
+                        const total = mrptotal + delivery;
+                        setCartTotal(total);
+
+                        // Calculate discount
+                        const discountedPriceTotal = data.data.reduce((acc, item) => acc + (item.qty * item.products.discountedPrice), 0);
+                        const discount = total - discountedPriceTotal;
+                        setCartDiscount(discount);
+
+                        // Calculate grand total
+                        const grandTotal = discountedPriceTotal;
+                        setCartGrandTotal(grandTotal);
+
+                        // Calculate saved
+                        const saved = mrptotal - grandTotal;
+                        setCartSaved(saved);
+
+                    } else {
+                        console.error('Error:', data);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching cart:', error);
+                });
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
+    };
+
+    const fetchDefaultAddress = async (userId) => {
+        try {
+            fetch(`https://wonderwoods.aps.org.in/api/address/default?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        console.log('Default Address:', data.data);
+                        setCartDeliveryAddress(data.data);
+                    } else {
+                        console.error('Error:', data);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching address:', error);
+                });
+        } catch (error) {
+            console.error('Error fetching address:', error);
+        }
+    };
+
+    const confirmOrder = async () => {
         console.log('Checking you out');
-        console.log('====================================');
+
+        const options = {
+            description: 'Credits towards consultation',
+            image: 'https://i.imgur.com/3g7nmJC.png',
+            currency: 'INR',
+            key: 'rzp_test_NHB7HSbNbyi3CN',
+            amount: cartGrandTotal * 100, // amount in paise
+            name: 'Wonderwoods',
+            prefill: {
+                email: user['email'],
+                contact: user['phone'],
+                name: user['name']
+            },
+            theme: { color: '#F37254' }
+        }
+
+        // try {
+        //     const data = await RazorpayCheckout.open(options);
+        //     alert(`Success: ${data.razorpay_payment_id}`);
+        //     console.log('Success:', data);
+
+        //     // Proceed to confirm order in your backend
+        //     // fetch('https://wonderwoods.aps.org.in/api/confirm-order', { ... })
+
+        // } catch (error) {
+        //     console.log(`Error: ${error.code} | ${error.description}`);
+        //     ToastAndroid.show(`Error: ${error.description}`, ToastAndroid.SHORT);
+        // }
+
+        RazorpayCheckout.open(options).then((data) => {
+            // handle success
+            alert(`Success: ${data.razorpay_payment_id}`);
+        }).catch((error) => {
+            // handle failure
+            alert(`Error: ${error}`);
+        });
     }
 
     changeAddress = () => {
         console.log('====================================');
         console.log('Changing Address');
         console.log('====================================');
-        router.push({
-            pathname: 'address',
-            params: {
-                redirectBackTo: 'checkout'
-            }
-        })
+        router.push('/address')
     }
 
     return (
@@ -85,7 +205,7 @@ const Checkout = () => {
                                 <Text
                                     className="text-[16px] font-psemibold text-primary"
                                 >
-                                    ₹ {Number(16000).toLocaleString('en-IN')}
+                                    ₹ {Number(cartMRPTotal).toLocaleString('en-IN')}
                                 </Text>
                             </View>
 
@@ -101,7 +221,7 @@ const Checkout = () => {
                                 <Text
                                     className="text-[16px] font-psemibold text-primary"
                                 >
-                                    ₹ {Number(0).toLocaleString('en-IN')}
+                                    ₹ {Number(cartDelivery).toLocaleString('en-IN')}
                                 </Text>
                             </View>
 
@@ -117,7 +237,7 @@ const Checkout = () => {
                                 <Text
                                     className="text-[16px] font-psemibold text-primary"
                                 >
-                                    ₹ {Number(16000).toLocaleString('en-IN')}
+                                    ₹ {Number(cartTotal).toLocaleString('en-IN')}
                                 </Text>
                             </View>
 
@@ -133,7 +253,7 @@ const Checkout = () => {
                                 <Text
                                     className="text-[16px] font-psemibold text-primary"
                                 >
-                                    ₹ {Number(1000).toLocaleString('en-IN')}
+                                    ₹ {Number(cartDiscount).toLocaleString('en-IN')}
                                 </Text>
                             </View>
 
@@ -149,7 +269,7 @@ const Checkout = () => {
                                 <Text
                                     className="text-[22px] font-psemibold text-tertiary-light"
                                 >
-                                    ₹ {Number(15000).toLocaleString('en-IN')}
+                                    ₹ {Number(cartGrandTotal).toLocaleString('en-IN')}
                                 </Text>
                             </View>
 
@@ -164,7 +284,7 @@ const Checkout = () => {
                                     <Text
                                         className="text-[16px] font-psemibold text-tertiary-light"
                                     >
-                                        {Number(8000).toLocaleString('en-IN')}
+                                        {Number(cartSaved).toLocaleString('en-IN')}
                                     </Text>
                                 </Text>
                             </View>
@@ -201,17 +321,22 @@ const Checkout = () => {
                             <Text
                                 className="text-[16px] font-psemibold text-primary-dark"
                             >
-                                John Doe
+                                {cartDeliveryAddress?.name}
                             </Text>
                             <Text
                                 className="text-[16px] font-pregular text-primary-dark"
                             >
-                                123, 4th Cross, 5th Main, 6th Block, Koramangala, Bangalore, Karnataka, 560095
+                                {cartDeliveryAddress?.address1}
+                                {cartDeliveryAddress?.address2 && `, ${cartDeliveryAddress?.address2}`}
+                                {cartDeliveryAddress?.city && `, ${cartDeliveryAddress?.city}`}
+                                {cartDeliveryAddress?.state && `, ${cartDeliveryAddress?.state}`}
+                                {cartDeliveryAddress?.district && `, ${cartDeliveryAddress?.district}`}
+                                {cartDeliveryAddress?.pincode && `, ${cartDeliveryAddress?.pincode}`}
                             </Text>
                             <Text
                                 className="text-[16px] font-pregular text-primary-dark"
                             >
-                                Near Sony World Signal
+                                {cartDeliveryAddress?.landmark}
                             </Text>
                         </View>
                     </View>
