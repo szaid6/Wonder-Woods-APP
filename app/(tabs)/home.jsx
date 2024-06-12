@@ -62,6 +62,10 @@ const Home = () => {
   // Function to retrieve the "recently visited" list
   const getRecentlyVisited = async () => {
     try {
+
+      // clear recently visited products
+      // await AsyncStorage.removeItem('recentlyVisited');
+
       const jsonValue = await AsyncStorage.getItem('recentlyVisited');
       console.log('jsonValue', jsonValue);
       setRecentlyVisited(JSON.parse(jsonValue));
@@ -160,21 +164,25 @@ const Home = () => {
             </ View>
 
             {/* Recently Viewed Products */}
-            < View className="w-full h-auto my-3" >
-              <Text
-                className="text-xl text-primary font-psemibold my-3 text-center"
-              >RECENTLY VIEWED PRODUCTS
-              </Text>
-              <View className="flex flex-row flex-wrap justify-between px-4 mt-2">
-                {
-                  recentlyVisited.map((item) => (
-                    <RecentlyViewed
-                      item={item}
-                    />
-                  ))
-                }
-              </View>
-            </ View>
+
+            {recentlyVisited != null && (
+
+              < View className="w-full h-auto my-3" >
+                <Text
+                  className="text-xl text-primary font-psemibold my-3 text-center"
+                >RECENTLY VIEWED PRODUCTS
+                </Text>
+                <View className="flex flex-row flex-wrap justify-between px-4 mt-2">
+                  {
+                    recentlyVisited.map((item) => (
+                      <RecentlyViewed
+                        item={item}
+                      />
+                    ))
+                  }
+                </View>
+              </ View>
+            )}
 
             {/* Shop By Rooms */}
             < View className="w-full h-auto mt-3 bg-secondary-lighter" >

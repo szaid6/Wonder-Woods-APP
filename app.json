@@ -16,7 +16,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "jsEngine": "jsc"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,6 +39,7 @@
       "eas": {
         "projectId": "2e7245b9-99ad-46e1-af77-c053f01df980"
       }
-    }
+    },
+    "jsEngine": "hermes"
   }
 }
