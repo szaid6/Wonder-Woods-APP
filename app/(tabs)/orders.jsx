@@ -1,80 +1,69 @@
-import { View, Text, ScrollView, SafeAreaView, FlatList, Image } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView, SafeAreaView, FlatList, Image, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import images from '../../constants/images'
+import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Orders = () => {
 
-  const orders = [
-    {
-      id: 1,
-      orderNo: 'ORD-001',
-      date: '12-12-2021',
-      total: '10000',
-      status: 'Delivered',
-      items: [
-        {
-          id: 1,
-          image: images.logo,
-          title: 'Product 1',
-          price: '10000',
-          quantity: 1
-        },
-        {
-          id: 2,
-          image: images.logo,
-          title: 'Product 2',
-          price: '20000',
-          quantity: 1
-        }
-      ]
-    },
-    {
-      id: 2,
-      orderNo: 'ORD-002',
-      date: '13-12-2021',
-      total: '20000',
-      status: 'Pending',
-      items: [
-        {
-          id: 1,
-          image: images.logo,
-          title: 'Product 1 name will be here so that it can be displayed properly in the UI',
-          price: '10000',
-          quantity: 1
-        },
-        {
-          id: 2,
-          image: images.logo,
-          title: 'Product 2',
-          price: '20000',
-          quantity: 1
-        }
-      ]
-    },
-    {
-      id: 3,
-      orderNo: 'ORD-003',
-      date: '14-12-2021',
-      total: '30000',
-      status: 'Delivered',
-      items: [
-        {
-          id: 1,
-          image: images.logo,
-          title: 'Product 1',
-          price: '10000',
-          quantity: 1
-        },
-        {
-          id: 2,
-          image: images.logo,
-          title: 'Product 2',
-          price: '20000',
-          quantity: 1
-        }
-      ]
+  const [user, setUser] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchUserData();
     }
-  ]
+  }, [isFocused]);
+
+  const fetchUserData = async () => {
+    try {
+      const user = await AsyncStorage.getItem('user');
+      const userData = JSON.parse(user);
+      console.log('userData in orders', userData.id);
+      setUser(userData);
+      fetchOrders(userData.id);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setIsLoading(false);
+    }
+  };
+
+  const fetchOrders = async (userId) => {
+    try {
+      const response = await fetch(`https://wonderwoods.aps.org.in/api/orders?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.status === 200) {
+        setOrders(data.data);
+      } else {
+        console.error('Error:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const timeStampToDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString();
+  }
+
+  if (isLoading) {
+    return (
+      <View className="flex flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text className="text-[20px] font-psemibold text-primary-dark">Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView className="h-full bg-white" >
@@ -85,17 +74,17 @@ const Orders = () => {
           data={orders}
           renderItem={({ item, index }) => (
             <View
-            // add margin bottom to the last item
+              // add margin bottom to the last item
               className={`w-full bg-secondary-lighter border-primary-light border-2 mb-3 rounded-md ${index === orders.length - 1 ? "mb-[80px]" : ""}`}
             >
               <View
                 className="w-full flex flex-row justify-between px-5 py-3 rounded-t bg-primary-light"
               >
-                <Text className="text-white font-psemibold">{item.orderNo}</Text>
-                <Text className="text-white font-psemibold">{item.date}</Text>
+                <Text className="text-white font-psemibold">TRXID-{item.id}</Text>
+                <Text className="text-white font-psemibold">{timeStampToDate(item.created_at)}</Text>
               </View>
               <FlatList
-                data={item.items}
+                data={item.orders}
                 className="mt-2 px-2"
                 renderItem={({ item }) => (
                   <>
@@ -106,9 +95,9 @@ const Orders = () => {
                         className="w-[20%] h-20 rounded-md"
                       >
                         <Image
-                          source={item.image}
+                          source={{ uri: `https://wonderwoods.aps.org.in/${item.product.image}` }}
                           className="w-20 h-20 rounded-md"
-                          resizeMode='contain'
+                          resizeMode='cover'
                         />
                       </View>
                       <View
@@ -116,7 +105,7 @@ const Orders = () => {
                       >
                         <Text
                           numberOfLines={2}
-                          className="text-tertiary font-psemibold">{item.title}</Text>
+                          className="text-tertiary font-psemibold">{item.product.name}</Text>
                         <View
                           className="flex flex-row justify-between"
                         >
@@ -127,7 +116,7 @@ const Orders = () => {
                             <Text className="text-tertiary font-psemibold text-xl">{item.price}</Text>
                           </Text>
                           <Text className="text-tertiary font-psemibold">Nos - {''}
-                            <Text className="text-tertiary font-psemibold text-xl ">{item.quantity}</Text>
+                            <Text className="text-tertiary font-psemibold text-xl ">{item.qty}</Text>
                           </Text>
                         </View>
                       </View>
@@ -140,7 +129,7 @@ const Orders = () => {
               <View
                 className="w-full flex flex-row justify-between px-5 py-3 rounded-b bg-primary-light"
               >
-                <Text className="text-white font-psemibold">{item.total}</Text>
+                <Text className="text-white font-psemibold">₹ {item.total}</Text>
                 <Text className="text-white font-psemibold">{item.status}</Text>
               </View>
             </View>

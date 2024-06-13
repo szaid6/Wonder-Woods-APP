@@ -25,7 +25,7 @@ const Checkout = () => {
         AsyncStorage.getItem('user')
             .then((user) => {
                 const userData = JSON.parse(user)
-                console.log('userData', userData);
+                // console.log('userData', userData);
                 fetchCart(userData.id);
                 setUser(userData);
             })
@@ -36,7 +36,7 @@ const Checkout = () => {
 
     useEffect(() => {
         if (isFocused && user) {
-            console.log('user', user);
+            // console.log('user', user);
             fetchDefaultAddress(user['id']);
         }
     }, [isFocused, user]);
@@ -102,7 +102,7 @@ const Checkout = () => {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 200) {
-                        console.log('Default Address:', data.data);
+                        // console.log('Default Address:', data.data);
                         setCartDeliveryAddress(data.data);
                     } else {
                         console.error('Error:', data);
@@ -116,8 +116,8 @@ const Checkout = () => {
         }
     };
 
-    const confirmOrder = async () => {
-        console.log('Checking you out');
+    const payOrder = async () => {
+        // console.log('Checking you out');
 
         const options = {
             description: 'Credits towards consultation',
@@ -149,12 +149,57 @@ const Checkout = () => {
 
         RazorpayCheckout.open(options).then((data) => {
             // handle success
-            alert(`Success: ${data.razorpay_payment_id}`);
+            // alert(`Success: ${data.razorpay_payment_id}`);
+            confirmOrderBackend(data);
         }).catch((error) => {
             // handle failure
             alert(`Error: ${error}`);
         });
     }
+
+    const confirmOrder = () => {
+        console.log('Confirming order');
+        confirmOrderBackend(null);
+    }
+
+    const confirmOrderBackend = async (pgData) => {
+        try {
+
+            // console.log("cart", cart);
+            // console.log("cartGrandTotal", cartGrandTotal);
+            // console.log("cartDeliveryAddress", cartDeliveryAddress);
+
+            const response = await fetch('https://wonderwoods.aps.org.in/api/confirm-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: user['id'],
+                    cart: cart,
+                    total: cartGrandTotal,
+                    deliveryAddress: cartDeliveryAddress,
+                    pgData: pgData
+                }),
+            });
+
+            const data = await response.json();
+            console.log('Success:', data);
+
+            if (data.status === 200) {
+                ToastAndroid.show('Order placed successfully', ToastAndroid.SHORT);
+                router.push('/orders');
+            } else {
+                console.error('Error:', data);
+                ToastAndroid.show('Error placing order', ToastAndroid.SHORT);
+            }
+
+        } catch (error) {
+            console.error('Error confirming order:', error);
+            ToastAndroid.show('Error placing order', ToastAndroid.SHORT);
+        }
+    }
+
 
     changeAddress = () => {
         console.log('====================================');
@@ -345,11 +390,17 @@ const Checkout = () => {
 
             {/* CTA for wishlist and add to cart */}
             <View
-                className="fixed bottom-0"
+                className="fixed bottom-0 flex flex-row justify-around items-center"
             >
                 <CustomButton
+                    title="PAY ORDER"
+                    containerStyles="w-50 bg-primary rounded-sm"
+                    textStyles="text-lg text-white"
+                    handlePress={payOrder}
+                />
+                <CustomButton
                     title="CONFIRM ORDER"
-                    containerStyles="w-full bg-primary rounded-sm"
+                    containerStyles="w-50 bg-primary rounded-sm"
                     textStyles="text-lg text-white"
                     handlePress={confirmOrder}
                 />
