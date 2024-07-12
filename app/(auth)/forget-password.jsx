@@ -6,6 +6,7 @@ import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton';
 import { Link, router } from 'expo-router'
 
+import { API_BASE_URL } from '@env';
 
 const ForgetPassword = () => {
     const [form, setForm] = useState({
@@ -41,7 +42,7 @@ const ForgetPassword = () => {
         }
 
         // send the form data to the server
-        fetch('https://wonderwoods.aps.org.in/api/forget-password', {
+        fetch(`${API_BASE_URL}/forget-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

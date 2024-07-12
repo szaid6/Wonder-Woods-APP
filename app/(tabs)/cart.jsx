@@ -8,6 +8,8 @@ import CustomButton from '../../components/CustomButton';
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { API_BASE_URL } from '@env';
+
 const Cart = () => {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
@@ -36,7 +38,7 @@ const Cart = () => {
 
   const fetchCart = async (userId) => {
     try {
-      const response = await fetch(`https://wonderwoods.aps.org.in/api/cart?userId=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/cart?userId=${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +84,7 @@ const Cart = () => {
   const updateCartInBackend = async (userId, productId, qty) => {
     console.log('Update Cart in Backend', userId, productId, qty);
     try {
-      const response = await fetch(`https://wonderwoods.aps.org.in/api/cart/update`, {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +106,7 @@ const Cart = () => {
 
   const toggleCart = async (id) => {
     try {
-      const response = await fetch(`https://wonderwoods.aps.org.in/api/cart/add`, {
+      const response = await fetch(`${API_BASE_URL}/cart/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +131,7 @@ const Cart = () => {
 
   const toggleWishlist = async (id) => {
     try {
-      const response = await fetch(`https://wonderwoods.aps.org.in/api/wishlist/add`, {
+      const response = await fetch(`${API_BASE_URL}/wishlist/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -189,6 +191,7 @@ const Cart = () => {
           />
         }
         ListHeaderComponent={
+          cart.length > 0 &&
           <View className="flex mx-2 my-5 rounded-md px-4 py-3 bg-secondary-lighter">
             <View className="flex flex-row justify-between items-center ">
               <Text className="text-[16px] font-pmedium text-primary-dark">Subtotal</Text>
@@ -198,12 +201,15 @@ const Cart = () => {
                 </Text>
               </Text>
             </View>
+            <Text className="text-[12px] font-pregular text-primary-light mt-1">Shipping charges and taxes will be calculated at checkout</Text>
+
             <CustomButton
               title={`Proceed to Buy (${cart.length} items)`}
               handlePress={checkout.bind(this, cart)}
               containerStyles="mt-3 rounded-md bg-secondary-light"
               textStyles="text-tertiary-light font-psemibold text-[16px]"
             />
+
           </View>
         }
         showsVerticalScrollIndicator={false}

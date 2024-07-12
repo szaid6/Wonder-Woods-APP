@@ -7,6 +7,8 @@ import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RazorpayCheckout from 'react-native-razorpay';
 
+import { API_BASE_URL } from '@env';
+
 const Checkout = () => {
 
     const [cart, setCart] = useState([])
@@ -43,7 +45,7 @@ const Checkout = () => {
 
     const fetchCart = async (userId) => {
         try {
-            fetch(`https://wonderwoods.aps.org.in/api/cart?userId=${userId}`, {
+            fetch(`${API_BASE_URL}/cart?userId=${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,7 +95,7 @@ const Checkout = () => {
 
     const fetchDefaultAddress = async (userId) => {
         try {
-            fetch(`https://wonderwoods.aps.org.in/api/address/default?userId=${userId}`, {
+            fetch(`${API_BASE_URL}/address/default?userId=${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -119,6 +121,12 @@ const Checkout = () => {
     const payOrder = async () => {
         // console.log('Checking you out');
 
+        if (cartDeliveryAddress === null) {
+            ToastAndroid.show('Please select a default delivery address', ToastAndroid.LONG);
+            router.push('/address');
+            return;
+        }
+
         const options = {
             description: 'Credits towards consultation',
             image: 'https://i.imgur.com/3g7nmJC.png',
@@ -133,19 +141,6 @@ const Checkout = () => {
             },
             theme: { color: '#F37254' }
         }
-
-        // try {
-        //     const data = await RazorpayCheckout.open(options);
-        //     alert(`Success: ${data.razorpay_payment_id}`);
-        //     console.log('Success:', data);
-
-        //     // Proceed to confirm order in your backend
-        //     // fetch('https://wonderwoods.aps.org.in/api/confirm-order', { ... })
-
-        // } catch (error) {
-        //     console.log(`Error: ${error.code} | ${error.description}`);
-        //     ToastAndroid.show(`Error: ${error.description}`, ToastAndroid.SHORT);
-        // }
 
         RazorpayCheckout.open(options).then((data) => {
             // handle success
@@ -165,11 +160,7 @@ const Checkout = () => {
     const confirmOrderBackend = async (pgData) => {
         try {
 
-            // console.log("cart", cart);
-            // console.log("cartGrandTotal", cartGrandTotal);
-            // console.log("cartDeliveryAddress", cartDeliveryAddress);
-
-            const response = await fetch('https://wonderwoods.aps.org.in/api/confirm-order', {
+            const response = await fetch(`${API_BASE_URL}/confirm-order`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -390,19 +381,19 @@ const Checkout = () => {
 
             {/* CTA for wishlist and add to cart */}
             <View
-                className="fixed bottom-0 flex flex-row justify-around items-center"
+                className="fixed bottom-0"
             >
-                <CustomButton
+                {/* <CustomButton
                     title="PAY ORDER"
                     containerStyles="w-50 bg-primary rounded-sm"
                     textStyles="text-lg text-white"
                     handlePress={payOrder}
-                />
+                /> */}
                 <CustomButton
                     title="CONFIRM ORDER"
-                    containerStyles="w-50 bg-primary rounded-sm"
+                    containerStyles="w-100 bg-primary rounded-sm"
                     textStyles="text-lg text-white"
-                    handlePress={confirmOrder}
+                    handlePress={payOrder}
                 />
             </View>
         </>

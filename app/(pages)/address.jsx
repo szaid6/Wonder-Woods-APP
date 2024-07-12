@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, TouchableOpacity, TouchableWithoutFeedback, FlatList, ToastAndroid } from 'react-native'
+import { View, Text, TouchableWithoutFeedback, FlatList, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '../../components/Header';
@@ -8,6 +8,7 @@ import EmptyPage from '../../components/EmptyPage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
+import { API_BASE_URL } from '@env';
 
 const Address = () => {
 
@@ -22,7 +23,7 @@ const Address = () => {
             .then((user) => {
                 const userData = JSON.parse(user)
                 setUser(userData)
-                fetch('https://wonderwoods.aps.org.in/api/address?userId=' + userData.id, {
+                fetch(`${API_BASE_URL}/address?userId=` + userData.id, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -42,7 +43,7 @@ const Address = () => {
 
     const changeDefaultAddress = (addressId) => {
 
-        fetch('https://wonderwoods.aps.org.in/api/address/default', {
+        fetch(`${API_BASE_URL}/address/default`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

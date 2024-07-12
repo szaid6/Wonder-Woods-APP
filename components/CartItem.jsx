@@ -4,6 +4,7 @@ import CustomButton from './CustomButton'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
+import { API_BASE_URL, IMAGE_API_BASE_URL } from '@env';
 
 const QtyButton = ({ qty, handleIncrement, handleDecrement }) => {
 
@@ -68,7 +69,7 @@ const CartItem = ({ item, showQty, handlePlusCount, handleMinusCount, showDelete
 
     const checkCart = async (productId) => {
         try {
-            const response = await fetch('https://wonderwoods.aps.org.in/api/cart/check?userId=' + user.id + '&productId=' + productId, {
+            const response = await fetch(`${API_BASE_URL}/cart/check?userId=` + user.id + '&productId=' + productId, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ const CartItem = ({ item, showQty, handlePlusCount, handleMinusCount, showDelete
 
     const checkWishlist = async (productId) => {
         try {
-            const response = await fetch('https://wonderwoods.aps.org.in/api/wishlist/check?userId=' + user.id + '&productId=' + productId, {
+            const response = await fetch(`${API_BASE_URL}/wishlist/check?userId=` + user.id + '&productId=' + productId, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -135,7 +136,7 @@ const CartItem = ({ item, showQty, handlePlusCount, handleMinusCount, showDelete
                     className="w-[25%] ml-2"
                 >
                     <Image
-                        source={{ uri: `https://wonderwoods.aps.org.in/${item.products.image}` }}
+                        source={{ uri: `${IMAGE_API_BASE_URL}/${item.products.image}` }}
                         className="w-24 h-24 rounded-lg"
                         resizeMode='cover'
                     />

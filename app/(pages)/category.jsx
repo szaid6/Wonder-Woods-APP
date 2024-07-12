@@ -6,6 +6,8 @@ import { useLocalSearchParams } from 'expo-router'
 import Icon from '../../components/Icon'
 import ProductVertical from '../../components/ProductVertical'
 
+import { API_BASE_URL } from '@env'
+
 const Category = () => {
 
   // Get the item from the navigation
@@ -21,7 +23,7 @@ const Category = () => {
 
   // Get the subcategories and products
   useEffect(() => {
-    fetch('https://wonderwoods.aps.org.in/api/category/' + categoryId, {
+    fetch(`${API_BASE_URL}/category/` + categoryId, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

@@ -5,6 +5,7 @@ import images from '../../constants/images';
 import CartItem from '../../components/CartItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import { router } from 'expo-router';
 
 const Wishlist = () => {
   const [user, setUser] = useState({});
@@ -32,7 +33,7 @@ const Wishlist = () => {
 
   const fetchWishlist = async (userId) => {
     try {
-      const response = await fetch(`https://wonderwoods.aps.org.in/api/wishlist?userId=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/wishlist?userId=${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ const Wishlist = () => {
 
   const toggleCart = async (id) => {
     try {
-      const response = await fetch(`https://wonderwoods.aps.org.in/api/cart/add`, {
+      const response = await fetch(`${API_BASE_URL}/cart/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +84,7 @@ const Wishlist = () => {
 
   const toggleWishlist = async (id) => {
     try {
-      const response = await fetch(`https://wonderwoods.aps.org.in/api/wishlist/add`, {
+      const response = await fetch(`${API_BASE_URL}/wishlist/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

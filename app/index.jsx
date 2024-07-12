@@ -7,6 +7,8 @@ import { images } from '../constants';
 import CustomButton from '../components/CustomButton';
 import { useGlobalContext } from '../context/GlobalProvider';
 
+
+
 export default function App() {
 
     const { isLoading, isAuthenticated } = useGlobalContext();
@@ -24,7 +26,7 @@ export default function App() {
                     <Text className="text-primary-light text-xl font-pbold text-center mt-4">
                         Discover a world where comfort meets style with {''}
                         <Text className="text-primary-dark text-xl font-bold text-center">
-                            Wonder Woods
+                            Wonder Woods 
                         </Text>
                     </Text>
 

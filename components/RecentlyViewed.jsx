@@ -3,6 +3,9 @@ import React from 'react'
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { IMAGE_API_BASE_URL } from '@env';
+
+
 const RecentlyViewed = ({ item }) => {
 
     // Function to save a product to "recently visited" list
@@ -58,7 +61,7 @@ const RecentlyViewed = ({ item }) => {
                     className="w-[180px] h-[180px] mb-3 rounded-lg bg-gray-200"
                 >
                     <Image
-                        source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }}
+                        source={{ uri: `${IMAGE_API_BASE_URL}/${item.image}` }}
                         className="w-full h-full rounded-lg opacity-80"
                         resizeMode='cover'
                     />

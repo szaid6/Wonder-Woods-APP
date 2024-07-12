@@ -4,16 +4,37 @@ import Header from '../../components/Header'
 import icons from '../../constants/icons';
 import EmptyPage from '../../components/EmptyPage';
 import images from '../../constants/images';
+import { router } from 'expo-router';
+
+import { API_BASE_URL } from '@env';
+
 
 const Search = () => {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
 
     // Function to handle changes in the search query
-    const handleSearchQueryChange = (query) => {
-        setSearchQuery(query);
-        // You can perform any other actions you need with the search query here
+    const handleSearchQueryChange = async (query) => {
+        try {
+            console.log('Search query1:', query);
+            // Perform search operation here
+            const response = await fetch(`${API_BASE_URL}/search?query=${query}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-        console.log('Search query in search page:', query);
+            const data = await response.json();
+
+            if (data.status === 200) {
+                console.log('Search results:', data.data);
+                setSearchResults(data.data);
+            } else {
+                console.error('Error:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+        }
 
     };
     return (
@@ -22,7 +43,7 @@ const Search = () => {
                 <Header
                     showTitle={false}
                     title=""
-                    showBackButton={false}
+                    showBackButton={true}
                     showNotificationIcon={true}
                     showSearchBar={true}
                     searchBarEditable={true}
@@ -32,18 +53,7 @@ const Search = () => {
             <SafeAreaView className="w-full px-4 flex-1 ">
                 {/* show results in a flatlist */}
                 <FlatList
-                    data={[
-                        { id: 1, title: 'Search Result 1' },
-                        { id: 2, title: 'Search Result 2' },
-                        { id: 3, title: 'Search Result 3' },
-                        { id: 4, title: 'Search Result 4' },
-                        { id: 5, title: 'Search Result 5' },
-                        { id: 6, title: 'Search Result 6' },
-                        { id: 7, title: 'Search Result 7' },
-                        { id: 8, title: 'Search Result 8' },
-                        { id: 9, title: 'Search Result 9' },
-                        { id: 10, title: 'Search Result 10' },
-                    ]}
+                    data={searchResults}
                     ListEmptyComponent={
                         <EmptyPage
                             image={images.search}
@@ -55,7 +65,12 @@ const Search = () => {
                     showsHorizontalScrollIndicator={false}
                     renderItem={({ item }) => (
                         <TouchableWithoutFeedback
-                            onPress={() => console.log('Search result clicked')}
+                            onPress={() => router.push({
+                                pathname: 'product-detail',
+                                params: {
+                                    id: item.id
+                                }
+                            })}
                         >
                             <View className="flex flex-row border-b gap-x-3 border-gray-200 py-3">
                                 <Image
@@ -64,7 +79,7 @@ const Search = () => {
                                     resizeMode='contain'
                                     tintColor={'#bd3e11'}
                                 />
-                                <Text className="text-[16px] font-pmedium text-primary-dark">{item.title}</Text>
+                                <Text className="text-[16px] font-pmedium text-primary-dark">{item.name}</Text>
                             </View>
                         </TouchableWithoutFeedback>
                     )}

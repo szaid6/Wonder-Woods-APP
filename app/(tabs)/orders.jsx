@@ -4,6 +4,8 @@ import images from '../../constants/images'
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { API_BASE_URL, IMAGE_API_BASE_URL } from '@env';
+
 const Orders = () => {
 
   const [user, setUser] = useState(null);
@@ -32,7 +34,7 @@ const Orders = () => {
 
   const fetchOrders = async (userId) => {
     try {
-      const response = await fetch(`https://wonderwoods.aps.org.in/api/orders?userId=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/orders?userId=${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +97,7 @@ const Orders = () => {
                         className="w-[20%] h-20 rounded-md"
                       >
                         <Image
-                          source={{ uri: `https://wonderwoods.aps.org.in/${item.product.image}` }}
+                          source={{ uri: `${IMAGE_API_BASE_URL}/${item.product.image}` }}
                           className="w-20 h-20 rounded-md"
                           resizeMode='cover'
                         />

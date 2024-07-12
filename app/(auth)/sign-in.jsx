@@ -8,6 +8,9 @@ import { Link, router } from 'expo-router'
 import { useGlobalContext } from '../../context/GlobalProvider'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+import { API_BASE_URL } from '@env';
+
+
 const SignIn = () => {
 
   const [form, setForm] = useState({
@@ -22,7 +25,7 @@ const SignIn = () => {
   const submit = () => {
     setIsSubmitting(true)
 
-    console.log('submitting form', form);
+    
 
     // issue an alert if the form is not valid
     if (!form.phone || !form.password) {
@@ -43,7 +46,7 @@ const SignIn = () => {
       password: form.password
     }
 
-    fetch('https://wonderwoods.aps.org.in/api/login', {
+    fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

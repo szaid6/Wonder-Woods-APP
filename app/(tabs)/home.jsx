@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { useGlobalContext } from '../../context/GlobalProvider';
 
+import { API_BASE_URL, IMAGE_API_BASE_URL } from '@env';
 
 const Home = () => {
   const [defaultAddress, setDefaultAddress] = useState(null)
@@ -31,7 +32,7 @@ const Home = () => {
         const userData = JSON.parse(user)
         console.log('userData', userData);
 
-        fetch('https://wonderwoods.aps.org.in/api/welcome?userId=' + userData.id, {
+        fetch(`${API_BASE_URL}/welcome?userId=` + userData.id, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -62,12 +63,12 @@ const Home = () => {
   // Function to retrieve the "recently visited" list
   const getRecentlyVisited = async () => {
     try {
-
+      console.log(`${IMAGE_API_BASE_URL}`);
       // clear recently visited products
       // await AsyncStorage.removeItem('recentlyVisited');
 
       const jsonValue = await AsyncStorage.getItem('recentlyVisited');
-      console.log('jsonValue', jsonValue);
+      // console.log('jsonValue', jsonValue);
       setRecentlyVisited(JSON.parse(jsonValue));
       return jsonValue != null ? JSON.parse(jsonValue) : [];
     } catch (e) {

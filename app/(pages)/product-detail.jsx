@@ -8,6 +8,9 @@ import Size from '../../components/Size';
 import Color from '../../components/Color';
 import CustomButton from '../../components/CustomButton';
 import ProductVertical from '../../components/ProductVertical';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { API_BASE_URL, IMAGE_API_BASE_URL } from '@env';
 
 const ProductDetail = () => {
 
@@ -23,7 +26,7 @@ const ProductDetail = () => {
 
     useEffect(() => {
         // fetch the product details from the API
-        fetch(`https://wonderwoods.aps.org.in/api/product/${productId}`, {
+        fetch(`${API_BASE_URL}/product/${productId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -33,6 +36,7 @@ const ProductDetail = () => {
             .then(data => {
                 console.log('Success:', data);
                 setProduct(data.data);
+                saveProductToRecentlyVisited(data.data);
                 setSimilarProducts(data.similarProducts);
                 setIsLoading(false);
             })
@@ -52,6 +56,25 @@ const ProductDetail = () => {
     const addToCart = () => {
         console.log('Added to cart');
     }
+
+    const saveProductToRecentlyVisited = async (product) => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('recentlyVisited');
+            let recentlyVisited = jsonValue ? JSON.parse(jsonValue) : [];
+
+            const { id, image, name } = product;
+            recentlyVisited = recentlyVisited.filter(item => item.id !== id);
+            recentlyVisited.unshift({ id, image, name });
+
+            if (recentlyVisited.length > 4) {
+                recentlyVisited.pop();
+            }
+
+            await AsyncStorage.setItem('recentlyVisited', JSON.stringify(recentlyVisited));
+        } catch (error) {
+            console.error('Error saving product to recently visited:', error);
+        }
+    };
 
     return (
         <>
@@ -91,7 +114,7 @@ const ProductDetail = () => {
                             >
                                 <View className="w-full flex-row  px-3 h-72 bg-white">
                                     <Image
-                                        source={{ uri: `https://wonderwoods.aps.org.in/${product.image}` }}
+                                        source={{ uri: `${IMAGE_API_BASE_URL}/${product.image}` }}
                                         className="w-full h-full bg-gray-200 rounded-lg"
                                         resizeMode='cover'
                                     />
@@ -270,7 +293,7 @@ const ProductDetail = () => {
                                                 className={`w-[300px] flex-row  px-3 h-52 mr-4 ${index === 0 ? 'ml-5' : ''}`}
                                             >
                                                 <Image
-                                                    source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }}
+                                                    source={{ uri: `${IMAGE_API_BASE_URL}/${item.image}` }}
                                                     className="w-full h-full bg-gray-200 rounded-lg"
                                                     resizeMode='cover'
                                                 />

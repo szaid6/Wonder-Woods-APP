@@ -6,6 +6,7 @@ import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton';
 import { Link, router } from 'expo-router'
 
+import { API_BASE_URL } from '@env';
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -48,7 +49,7 @@ const SignUp = () => {
       password: form.password
     }
 
-    fetch('https://wonderwoods.aps.org.in/api/register', {
+    fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

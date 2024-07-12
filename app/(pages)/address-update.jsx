@@ -1,11 +1,12 @@
-import { View, Text, ScrollView, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, ScrollView } from 'react-native'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '../../components/Header';
 import { router, useLocalSearchParams } from 'expo-router';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { API_BASE_URL } from '@env';
 
 const AddressUpdate = () => {
 
@@ -32,7 +33,7 @@ const AddressUpdate = () => {
   // save address to server
   const updateAddress = () => {
 
-    fetch('https://wonderwoods.aps.org.in/api/address/update', {
+    fetch(`${API_BASE_URL}/address/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

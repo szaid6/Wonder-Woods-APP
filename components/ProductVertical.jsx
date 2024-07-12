@@ -7,6 +7,8 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
+import { API_BASE_URL, IMAGE_API_BASE_URL } from '@env';
+
 const ProductVertical = ({ item }) => {
     const [user, setUser] = useState({});
     const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -34,7 +36,7 @@ const ProductVertical = ({ item }) => {
 
     const checkProductStatus = async (userId, productId) => {
         try {
-            const cartResponse = await fetch(`https://wonderwoods.aps.org.in/api/cart/check?userId=${userId}&productId=${productId}`, {
+            const cartResponse = await fetch(`${API_BASE_URL}/cart/check?userId=${userId}&productId=${productId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,7 +45,7 @@ const ProductVertical = ({ item }) => {
             const cartData = await cartResponse.json();
             setIsAddedToCart(cartData.status === 200 && cartData.isPresent);
 
-            const wishlistResponse = await fetch(`https://wonderwoods.aps.org.in/api/wishlist/check?userId=${userId}&productId=${productId}`, {
+            const wishlistResponse = await fetch(`${API_BASE_URL}/wishlist/check?userId=${userId}&productId=${productId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -56,27 +58,27 @@ const ProductVertical = ({ item }) => {
         }
     };
 
-    const saveProductToRecentlyVisited = async (product) => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('recentlyVisited');
-            let recentlyVisited = jsonValue ? JSON.parse(jsonValue) : [];
+    // const saveProductToRecentlyVisited = async (product) => {
+    //     try {
+    //         const jsonValue = await AsyncStorage.getItem('recentlyVisited');
+    //         let recentlyVisited = jsonValue ? JSON.parse(jsonValue) : [];
 
-            const { id, image, name } = product;
-            recentlyVisited = recentlyVisited.filter(item => item.id !== id);
-            recentlyVisited.unshift({ id, image, name });
+    //         const { id, image, name } = product;
+    //         recentlyVisited = recentlyVisited.filter(item => item.id !== id);
+    //         recentlyVisited.unshift({ id, image, name });
 
-            if (recentlyVisited.length > 4) {
-                recentlyVisited.pop();
-            }
+    //         if (recentlyVisited.length > 4) {
+    //             recentlyVisited.pop();
+    //         }
 
-            await AsyncStorage.setItem('recentlyVisited', JSON.stringify(recentlyVisited));
-        } catch (error) {
-            console.error('Error saving product to recently visited:', error);
-        }
-    };
+    //         await AsyncStorage.setItem('recentlyVisited', JSON.stringify(recentlyVisited));
+    //     } catch (error) {
+    //         console.error('Error saving product to recently visited:', error);
+    //     }
+    // };
 
     const goToProductDetails = () => {
-        saveProductToRecentlyVisited(item);
+        // saveProductToRecentlyVisited(item);
         router.push({
             pathname: 'product-detail',
             params: { id: item.id }
@@ -85,7 +87,7 @@ const ProductVertical = ({ item }) => {
 
     const handleAddToCart = async () => {
         try {
-            const response = await fetch('https://wonderwoods.aps.org.in/api/cart/add', {
+            const response = await fetch(`${API_BASE_URL}/cart/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -110,7 +112,7 @@ const ProductVertical = ({ item }) => {
 
     const handleAddToWishlist = async () => {
         try {
-            const response = await fetch('https://wonderwoods.aps.org.in/api/wishlist/add', {
+            const response = await fetch(`${API_BASE_URL}/wishlist/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -138,7 +140,7 @@ const ProductVertical = ({ item }) => {
             <View>
                 <TouchableOpacity onPress={goToProductDetails} activeOpacity={1}>
                     <View className="w-[180px] h-[180px] rounded-lg bg-gray-200">
-                        <Image source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }} className="w-full h-full rounded-lg" resizeMode='cover' />
+                        <Image source={{ uri: `${IMAGE_API_BASE_URL}/${item.image}` }} className="w-full h-full rounded-lg" resizeMode='cover' />
                         {item.tag && (
                             <View className="h-5 absolute top-3 left-2 bg-secondary-lighter flex rounded-md items-center justify-center">
                                 <Text className="text-xs px-2 text-primary font-psemibold">{item.tag}</Text>

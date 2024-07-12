@@ -9,6 +9,8 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 
+import { API_BASE_URL, IMAGE_API_BASE_URL } from '@env';
+
 const ProfileDetails = () => {
     const [form, setForm] = useState({
         image: null,
@@ -28,7 +30,7 @@ const ProfileDetails = () => {
 
                 setForm({
                     ...form,
-                    image: 'https://wonderwoods.aps.org.in/' + userData.profileImage,
+                    image: `${IMAGE_API_BASE_URL}/` + userData.profileImage,
                     name: userData.name,
                     phone: userData.phone,
                     email: userData.email
@@ -61,7 +63,7 @@ const ProfileDetails = () => {
 
             console.log('formData', formData);
 
-            const response = await fetch('https://wonderwoods.aps.org.in/api/profile/update', {
+            const response = await fetch(`${API_BASE_URL}/profile/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data'

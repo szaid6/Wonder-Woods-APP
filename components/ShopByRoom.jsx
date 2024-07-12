@@ -1,13 +1,15 @@
 import { View, Text, Image } from 'react-native'
 import React from 'react'
 
+import { IMAGE_API_BASE_URL } from '@env';
+
 const ShopByRoom = ({ item }) => {
     return (
         <View
             className="w-[180px] h-[180px] mb-3 rounded-lg bg-gray-200"
         >
             <Image
-                source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }}
+                source={{ uri: `${IMAGE_API_BASE_URL}/${item.image}` }}
                 className="w-full h-full rounded-lg"
                 resizeMode='cover'
             />

@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import * as Animatable from 'react-native-animatable';
 import images from '../constants/images';
 
+import { IMAGE_API_BASE_URL } from '@env';
+
 
 const zoomIn = {
     0: {
@@ -30,7 +32,7 @@ const BannerItem = ({ activeIndex, item, index }) => {
             duration={1000}
         >
             <ImageBackground
-                source={{ uri: `https://wonderwoods.aps.org.in/${item.image}` }}
+                source={{ uri: `${IMAGE_API_BASE_URL}/${item.image}` }}
                 className="w-64 h-44 bg-black-dark "
                 resizeMode='cover'
             />

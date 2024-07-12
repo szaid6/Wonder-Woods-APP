@@ -7,6 +7,8 @@ import CustomButton from '../../components/CustomButton';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { API_BASE_URL } from '@env';
+
 const PasswordUpdate = () => {
 
     const [user, setUser] = useState(null);
@@ -55,7 +57,7 @@ const PasswordUpdate = () => {
         };
 
         // Make API request to reset password
-        fetch('https://wonderwoods.aps.org.in/api/profile/reset-password', {
+        fetch(`${API_BASE_URL}/profile/reset-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
