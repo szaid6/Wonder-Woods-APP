@@ -7,6 +7,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { router } from 'expo-router';
 
+import { API_BASE_URL } from '@env';
+
+
 const Wishlist = () => {
   const [user, setUser] = useState({});
   const [wishlist, setWishlist] = useState([]);
