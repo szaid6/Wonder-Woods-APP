@@ -81,6 +81,7 @@ const SignIn = () => {
       })
       .catch((error) => {
         console.error('Error:', error)
+        alert('Error:', error)
         ToastAndroid.show(
           'An error occurred. Please try again.',
           ToastAndroid.LONG

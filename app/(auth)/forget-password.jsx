@@ -72,6 +72,10 @@ const ForgetPassword = () => {
                 setIsSubmitting(false)
 
             })
+            .catch((error) => {
+                console.error('Error:', error)
+                ToastAndroid.show('An error occurred', ToastAndroid.LONG)
+            })
 
         setIsSubmitting(false)
     }

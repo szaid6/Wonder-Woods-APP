@@ -6,6 +6,8 @@ import { router } from 'expo-router';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '@env';
+
 
 const AddressAdd = () => {
 
@@ -35,7 +37,7 @@ const AddressAdd = () => {
   // save address to server
   const saveAddress = () => {
 
-    fetch('${API_BASE_URL}/address/add', {
+    fetch(`${API_BASE_URL}/address/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

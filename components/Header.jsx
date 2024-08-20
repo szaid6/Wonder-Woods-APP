@@ -5,6 +5,8 @@ import { router } from 'expo-router'
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { API_BASE_URL } from '@env';
+
 const Header = ({ showTitle, title, showBackButton, showNotificationIcon, showSearchBar, searchBarEditable, onSearchQueryChange }) => {
     const [form, setForm] = useState({
         search: '',

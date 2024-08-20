@@ -11,6 +11,10 @@
       "distribution": "internal"
     },
     "preview2": {
+      "env": {
+        "API_BASE_URL": "$API_BASE_URL",
+        "IMAGE_API_BASE_URL": "$IMAGE_API_BASE_URL"
+      },
       "android": {
         "buildType": "apk"
       }
